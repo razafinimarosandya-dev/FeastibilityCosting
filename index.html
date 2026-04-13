@@ -3287,8 +3287,8 @@
                         <div class="dash-card-toolbar" style="justify-content: flex-end;">
                             <span id="exportSlotComplete"></span>
                         </div>
-                        <div
-                            style="align-items: center; justify-content: center; text-align: center; color: #94a3b8; padding: 64px 24px 80px; width: 100%;">
+                        <div id="complete-empty-state"
+                            style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: #94a3b8; padding: 64px 24px 80px; width: 100%;">
                             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1"
                                 stroke-width="1.5">
                                 <path d="M9 11l3 3L22 4" />
@@ -3297,6 +3297,7 @@
                             <h2 style="margin-top: 16px; font-size: 18px; color: #64748b;">No completed items yet</h2>
                             <p style="font-size: 14px;">Completed feasibility reviews will appear here.</p>
                         </div>
+                        <div id="feasibility-complete-gallery" class="pattern-gallery-grid pattern-gallery-grid--open" style="display: none;" aria-label="Completed feasibility requests"></div>
                     </div>
                 </section>
             </div>
@@ -4081,6 +4082,8 @@
                     renderScheduleCalendar(schedCalMonth, schedCalYear);
                     dateDetailSection.classList.remove("visible");
                     updateSchedPickerSelectedLabel();
+                } else if (tab === "complete") {
+                    renderCompletedPage();
                 }
             });
         });
@@ -4656,8 +4659,13 @@
                     const dateCol = getDateColKey(row);
                     const dateVal = dateCol ? row[dateCol] : null;
                     if (dateVal && dateVal !== "-" && dateVal !== "") {
-                        if (!dateMap[dateVal]) dateMap[dateVal] = [];
-                        dateMap[dateVal].push(row);
+                        let parsedDateVal = String(dateVal);
+                        const d = new Date(dateVal);
+                        if (!isNaN(d.getTime())) {
+                            parsedDateVal = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                        }
+                        if (!dateMap[parsedDateVal]) dateMap[parsedDateVal] = [];
+                        dateMap[parsedDateVal].push(row);
                     }
                 }
             });
@@ -4772,6 +4780,44 @@
 
             dateDetailSection.classList.add("visible");
             dateDetailSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // ─────────────────────────────────────────
+        // COMPLETE TAB RENDERING (Tab 3)
+        // ─────────────────────────────────────────
+        function renderCompletedPage() {
+            const completedGallery = document.getElementById("feasibility-complete-gallery");
+            const emptyState = document.getElementById("complete-empty-state");
+            if (!completedGallery || !emptyState) return;
+
+            const completedRows = allData.filter(r => (r.Status || "").toLowerCase() === "complete");
+
+            if (completedRows.length === 0) {
+                emptyState.style.display = "flex";
+                completedGallery.style.display = "none";
+            } else {
+                emptyState.style.display = "none";
+                completedGallery.style.display = "grid";
+                completedGallery.innerHTML = "";
+                
+                const head = document.createElement("div");
+                head.className = "pattern-gallery-row pattern-gallery-row--head";
+                head.innerHTML =
+                    "<span>C Number</span>" +
+                    "<span>Style</span>" +
+                    "<span>Customer</span>" +
+                    "<span>Main fabric</span>" +
+                    "<span>Fabric header</span>" +
+                    "<span>Cust dept</span>" +
+                    "<span>Costing ready</span>" +
+                    "<span>Status</span>" +
+                    "<span></span>";
+                completedGallery.appendChild(head);
+
+                completedRows.forEach((row, i) => {
+                    appendAwaitingGalleryRow(completedGallery, row, i);
+                });
+            }
         }
 
         // ─────────────────────────────────────────
