@@ -3034,6 +3034,7 @@
                     <button type="button" class="feas-nav-link active" data-tab="awaiting">Awaiting Feasibility</button>
                     <button type="button" class="feas-nav-link" data-tab="scheduled">Feasibility Schedule</button>
                     <button type="button" class="feas-nav-link" data-tab="complete">Complete</button>
+                    <button type="button" class="feas-nav-link" data-tab="calendar">Calendar</button>
                 </div>
             </div>
             <div class="nav-right">
@@ -3297,12 +3298,59 @@
                             <h2 style="margin-top: 16px; font-size: 18px; color: #64748b;">No completed items yet</h2>
                             <p style="font-size: 14px;">Completed feasibility reviews will appear here.</p>
                         </div>
-                        <div id="feasibility-complete-gallery" class="pattern-gallery-grid pattern-gallery-grid--open" style="display: none;" aria-label="Completed feasibility requests"></div>
+                        <div id="feasibility-complete-gallery" class="pattern-gallery-grid pattern-gallery-grid--open"
+                            style="display: none;" aria-label="Completed feasibility requests"></div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- ═══════════════════════════════════════
+                 TAB 4 — COMPLETED CALENDAR
+            ════════════════════════════════════════ -->
+            <div class="tab-view feas-tab-panel" id="view-calendar">
+                <section class="right-panel dash-complete-panel" style="width: 100%;">
+                    <div class="dash-card">
+                        <div class="calendar-header"
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                            <button class="btn-outline" id="completed-cal-prev-btn" style="padding: 6px 12px;">&lt; Previous</button>
+                            <h2 id="completed-cal-month-title" style="margin: 0; font-size: 20px;">Month Year</h2>
+                            <button class="btn-outline" id="completed-cal-next-btn" style="padding: 6px 12px;">Next &gt;</button>
+                        </div>
+                        <div
+                            style="display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: bold; margin-bottom: 10px; color: var(--text-muted); padding-bottom: 8px; border-bottom: 1px solid var(--border-color);">
+                            <div>Sun</div>
+                            <div>Mon</div>
+                            <div>Tue</div>
+                            <div>Wed</div>
+                            <div>Thu</div>
+                            <div>Fri</div>
+                            <div>Sat</div>
+                        </div>
+                        <div id="completed-calendar-grid"
+                            style="display: grid; grid-template-columns: repeat(7, 1fr); grid-auto-rows: 100px; gap: 8px; text-align: left;">
+                            <!-- Calendar cells rendered here via JS -->
+                        </div>
                     </div>
                 </section>
             </div>
 
         </main>
+
+        <!-- Completed Calendar Day Modal -->
+        <div class="modal" id="completed-calendar-day-modal"
+            style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+            <div class="card"
+                style="width: 450px; padding: 24px; background: white; border-radius: 8px; max-height: 80vh; overflow-y: auto;">
+                <h3 id="completed-calendar-day-title" style="margin-bottom: 16px; border-bottom: 1px solid #ddd; padding-bottom: 8px;">
+                    Completed Feasibility for Date</h3>
+                <div id="completed-calendar-day-content" style="line-height: 1.6; font-size: 14px; margin-bottom: 24px;">
+                    <!-- Populated via JS -->
+                </div>
+                <div style="display: flex; justify-content: flex-end;">
+                    <button class="btn-secondary" id="close-completed-calendar-day-btn" style="padding: 8px 16px;">Close</button>
+                </div>
+            </div>
+        </div>
 
         <!-- ═══════════════════════════════════════
              FILTER MODAL (Techpack parity)
@@ -4084,6 +4132,8 @@
                     updateSchedPickerSelectedLabel();
                 } else if (tab === "complete") {
                     renderCompletedPage();
+                } else if (tab === "calendar") {
+                    renderCompletedCalendar(completedCalYear, completedCalMonth);
                 }
             });
         });
@@ -4171,6 +4221,7 @@
             initImageUploadModal();
             initFilterModal();
             initTimeValidation();
+            initCompletedCalendarBtns();
         });
 
         // ─────────────────────────────────────────
@@ -4799,7 +4850,7 @@
                 emptyState.style.display = "none";
                 completedGallery.style.display = "grid";
                 completedGallery.innerHTML = "";
-                
+
                 const head = document.createElement("div");
                 head.className = "pattern-gallery-row pattern-gallery-row--head";
                 head.innerHTML =
@@ -4816,6 +4867,146 @@
 
                 completedRows.forEach((row, i) => {
                     appendAwaitingGalleryRow(completedGallery, row, i);
+                });
+            }
+        }
+
+        // ─────────────────────────────────────────
+        // COMPLETED CALENDAR RENDERING (Tab 4)
+        // ─────────────────────────────────────────
+        let completedCalMonth = currentDate.getMonth();
+        let completedCalYear = currentDate.getFullYear();
+
+        function renderCompletedCalendar(year, month) {
+            const grid = document.getElementById("completed-calendar-grid");
+            if (!grid) return;
+            grid.innerHTML = "";
+
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            document.getElementById("completed-cal-month-title").textContent = `${monthNames[month]} ${year}`;
+
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            const completedRows = allData.filter(r => (r.Status || "").toLowerCase() === "complete");
+            const dayCounts = {};
+
+            completedRows.forEach(row => {
+                const dateCol = getDateColKey(row);
+                const dateVal = dateCol ? row[dateCol] : null;
+
+                if (dateVal && dateVal !== "-" && dateVal !== "") {
+                    let d = new Date(dateVal);
+                    if (!isNaN(d.getTime()) && d.getFullYear() === year && d.getMonth() === month) {
+                        const day = d.getDate();
+                        if (!dayCounts[day]) dayCounts[day] = [];
+                        dayCounts[day].push(row);
+                    }
+                }
+            });
+
+            for (let x = 0; x < firstDayIndex; x++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.style.background = '#f9fafb';
+                emptyCell.style.borderRadius = '6px';
+                grid.appendChild(emptyCell);
+            }
+
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dayCell = document.createElement('div');
+                dayCell.style.border = '1px solid #e5e7eb';
+                dayCell.style.borderRadius = '6px';
+                dayCell.style.padding = '8px';
+                dayCell.style.display = 'flex';
+                dayCell.style.flexDirection = 'column';
+                dayCell.style.backgroundColor = '#ffffff';
+
+                const dateNumber = document.createElement('strong');
+                dateNumber.style.color = '#374151';
+                dateNumber.textContent = String(i);
+                dayCell.appendChild(dateNumber);
+
+                if (dayCounts[i] && dayCounts[i].length > 0) {
+                    const countBadge = document.createElement('div');
+                    countBadge.style.marginTop = 'auto';
+                    countBadge.style.backgroundColor = 'var(--primary-blue, #2563eb)';
+                    countBadge.style.color = '#fff';
+                    countBadge.style.padding = '4px 8px';
+                    countBadge.style.borderRadius = '4px';
+                    countBadge.style.fontSize = '12px';
+                    countBadge.style.fontWeight = 'bold';
+                    countBadge.style.textAlign = 'center';
+                    countBadge.style.cursor = 'pointer';
+                    const len = dayCounts[i].length;
+                    countBadge.textContent = `${len} style${len > 1 ? 's' : ''}`;
+
+                    countBadge.addEventListener('mouseenter', () => { countBadge.style.opacity = '0.8'; });
+                    countBadge.addEventListener('mouseleave', () => { countBadge.style.opacity = '1'; });
+
+                    countBadge.addEventListener('click', () => {
+                        const modal = document.getElementById('completed-calendar-day-modal');
+                        const title = document.getElementById('completed-calendar-day-title');
+                        const content = document.getElementById('completed-calendar-day-content');
+
+                        if (modal && title && content) {
+                            title.textContent = `Completed Feasibility on ${monthNames[month]} ${i}, ${year}`;
+                            content.innerHTML = dayCounts[i].map((r) => {
+                                const safeId = feasDisplayId(r) || "-";
+                                const cust = feasDisplayCustomer(r) || "-";
+                                const styleName = feasDisplayStyle(r) || "-";
+                                return `
+                                <div style="padding: 10px 8px; border-bottom: 1px solid #f3f4f6; display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+                                    <div style="display:flex; flex-direction: column;">
+                                        <span style="font-weight: 500; color: var(--text-main);">${safeId} - ${styleName}</span>
+                                        <span style="font-size: 12px; color: var(--text-muted);">${cust}</span>
+                                    </div>
+                                    <span class="status-badge" style="background-color: var(--status-completed-bg, #ecfdf5); color: var(--status-completed-text, #059669); font-size: 11px;">Completed</span>
+                                </div>`;
+                            }).join('');
+                            modal.style.display = 'flex';
+                        }
+                    });
+                    dayCell.appendChild(countBadge);
+                }
+
+                grid.appendChild(dayCell);
+            }
+        }
+
+        function initCompletedCalendarBtns() {
+            const prevBtn = document.getElementById("completed-cal-prev-btn");
+            const nextBtn = document.getElementById("completed-cal-next-btn");
+            const closeBtn = document.getElementById("close-completed-calendar-day-btn");
+            const modal = document.getElementById("completed-calendar-day-modal");
+
+            if (prevBtn) {
+                prevBtn.addEventListener("click", () => {
+                    completedCalMonth--;
+                    if (completedCalMonth < 0) {
+                        completedCalMonth = 11;
+                        completedCalYear--;
+                    }
+                    renderCompletedCalendar(completedCalYear, completedCalMonth);
+                });
+            }
+
+            if (nextBtn) {
+                nextBtn.addEventListener("click", () => {
+                    completedCalMonth++;
+                    if (completedCalMonth > 11) {
+                        completedCalMonth = 0;
+                        completedCalYear++;
+                    }
+                    renderCompletedCalendar(completedCalYear, completedCalMonth);
+                });
+            }
+
+            if (closeBtn && modal) {
+                closeBtn.addEventListener("click", () => {
+                    modal.style.display = "none";
+                });
+                modal.addEventListener("click", (e) => {
+                    if (e.target === modal) modal.style.display = "none";
                 });
             }
         }
