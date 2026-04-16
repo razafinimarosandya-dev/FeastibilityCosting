@@ -4551,11 +4551,15 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
             const todayStr = todayKey(); // YYYY-MM-DD
 
             return allData.filter(function (row) {
-                const s = String(row.Status || '').trim();
-                if (s !== 'Complete') return false;
+                const s = String(row.Status || row.status || '').trim().toLowerCase();
+                if (s !== 'complete') return false;
 
                 // Priority check: specific completion date column
-                const compDate = row.Feasibility_Completion_Date || row["Feasibility Completion Date"];
+                const compDateKey = Object.keys(row).find(k => {
+                    const kl = k.toLowerCase().replace(/_/g, ' ');
+                    return kl === 'feasibility completion date' || kl === 'feasibility_completion_date' || kl === 'feas comp date';
+                });
+                const compDate = compDateKey ? row[compDateKey] : null;
                 if (compDate && String(compDate).includes(todayStr)) return true;
 
                 // Fallback: check any upload/tehpack date column for today
@@ -6442,6 +6446,18 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
                     showToast("⚠️ " + msg, "error");
                     return;
                 }
+                
+                // ✅ UPDATE LOCAL STATE for immediate quota sync
+                const todayStr = todayKey();
+                const compDateKey = Object.keys(currentUploadRow).find(k => {
+                    const kl = k.toLowerCase().replace(/_/g, ' ');
+                    return kl === 'feasibility completion date' || kl === 'feasibility_completion_date' || kl === 'feas comp date';
+                }) || "Feasibility_Completion_Date";
+                currentUploadRow[compDateKey] = todayStr;
+                
+                // Refresh local Quota UI
+                quotaUsed = countTodayUploads();
+                updateQuotaUI();
                 let pdfWindow = null;
                 try {
                     pdfWindow = window.open('', '_blank');
