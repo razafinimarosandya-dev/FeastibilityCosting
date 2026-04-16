@@ -3487,7 +3487,7 @@
                             <label style="font-size: 13px; color: #475569;"><strong>Attendees:</strong></label>
                             <textarea id="inviteAttendees" class="form-input" rows="2"
                                 style="padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 14px; font-family: inherit; resize: vertical;"
-                                placeholder="Loaded from sheet...">GAbbanah@tropicknits.com, KNarrainen@tropicknits.com</textarea>
+                                placeholder="Loaded from sheet...">CPOINEN@tropicknits.com, K.Moonesawmy@tropicknits.com, Fjumoorty@cdl-fabrics.com, AMungly@tropicknits.com</textarea>
                         </div>
                         <div class="form-group" style="display: flex; flex-direction: column; gap: 4px;">
                             <label style="font-size: 13px; color: #475569;"><strong>Meeting Notes:</strong></label>
@@ -3584,10 +3584,9 @@
             </div>
         </div>
 
-        <!-- Techpack browse + Upload Image -->
+        <!-- Techpack Upload Image -->
         <div class="um-browse-row">
             <span class="um-browse-label">Techpack:</span>
-            <button id="umBrowseBtn" class="um-browse-btn">Browse</button>
             <button id="umUploadImageBtn" class="um-upload-image-btn">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round">
@@ -3691,6 +3690,9 @@
         // --- State & DOM Elements ---
         /** Same web app as Techpack / Pattern / Conso / ACC / PRI; GET uses ?sheet=Feasibility */
         const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzSdyx3uNKZPhbhwg_eIc_VmRTvUNF8-Q5z9hunbr7seSuz2nNdO-awDI8qserEQHkr/exec";
+        // Optional override for a new Feasibility template (Google Drive file ID).
+        // Leave empty to use backend default template.
+        const FEAS_PDF_TEMPLATE_FILE_ID = "1WjSsOkFBpttKLtspI7g7FH6Wl5ecXewDi4LFCGzqVK0";
         /** @deprecated Was used for gviz; table data now loads via APPS_SCRIPT_URL ?sheet=Feasibility */
         const gvizUrl = "https://docs.google.com/spreadsheets/d/1x1UkcS6iIR0Yo54HkT-meLFo0u4IT-nMaXwguSwvKJo/gviz/tq?tqx=out:json";
         const ROWS_PER_PAGE = 15;
@@ -3825,6 +3827,7 @@
             if (n.includes("pl name") || n.includes("assignee")) return "pl";
             if (n.includes("status")) return "status";
             if (/leadtime|lead time|overdue|pl overdue/i.test(n)) return "leadtime";
+            if (n.includes("date") || n.includes("ready") || n.includes("created")) return "date";
             return "text";
         }
 
@@ -3960,8 +3963,13 @@
             if (raw.includes("T")) return raw.split("T")[0];
             const isoHead = raw.match(/^(\d{4}-\d{2}-\d{2})/);
             if (isoHead) return isoHead[1];
-            const slashHead = raw.match(/^(\d{1,2}\/\d{1,2}\/\d{4})/);
-            if (slashHead) return slashHead[1];
+            const slashHead = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+            if (slashHead) {
+                const y = slashHead[3];
+                const m = slashHead[2].padStart(2, "0");
+                const day = slashHead[1].padStart(2, "0");
+                return `${y}-${m}-${day}`;
+            }
             const d = new Date(raw);
             if (!Number.isNaN(d.getTime())) {
                 const y = d.getFullYear();
@@ -4052,8 +4060,10 @@
             el.innerHTML =
                 '<a class="um-detail-folder-link" href="' +
                 feasAttrEscape(fullUrl) +
-                '" target="_blank" rel="noopener noreferrer">' +
-                escapeHtmlFeas(s) +
+                '" target="_blank" rel="noopener noreferrer" title="' +
+                feasAttrEscape(s) +
+                '">' +
+                "Open Folder" +
                 "</a>";
         }
 
@@ -4210,12 +4220,26 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
                 if (!rowData.Status && !rowData["Status"]) rowData.Status = "Awaiting Feasibility";
                 return rowData;
             });
+            allData.reverse();
 
             if (allData.length > 0) {
-                var headers = Object.keys(allData[0]).filter(function (h) {
+                var allKeys = Object.keys(allData[0]).filter(function (h) {
                     return h !== "_originalStatus" && h !== "_sheetRow";
                 });
-                console.log("Feasibility sheet headers:", headers);
+
+                // ✅ FIX: Filter out redundant normalized keys (e.g., keep "C Number", hide "c_number")
+                var headers = allKeys.filter(function (h) {
+                    var normalized = h.toLowerCase().replace(/\s+/g, "_").replace(/ /g, "_");
+                    if (h === normalized) {
+                        var hasOriginal = allKeys.some(function (k) {
+                            return k !== h && k.toLowerCase().replace(/\s+/g, "_").replace(/ /g, "_") === h;
+                        });
+                        if (hasOriginal) return false;
+                    }
+                    return true;
+                });
+
+                console.log("Feasibility sheet headers (cleaned):", headers);
                 populateDropdowns();
                 renderTableHeaders(headers);
                 renderTablePage();
@@ -4411,7 +4435,22 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
                 });
             }
 
-            const headers = Object.keys(allData[0]).filter(h => h !== "_originalStatus" && h !== "_sheetRow");
+            var allKeys = Object.keys(allData[0]).filter(function (h) {
+                return h !== "_originalStatus" && h !== "_sheetRow";
+            });
+
+            // ✅ FIX: Filter out redundant normalized keys (e.g., keep "C Number", hide "c_number")
+            var headers = allKeys.filter(function (h) {
+                var normalized = h.toLowerCase().replace(/\s+/g, "_").replace(/ /g, "_");
+                if (h === normalized) {
+                    var hasOriginal = allKeys.some(function (k) {
+                        return k !== h && k.toLowerCase().replace(/\s+/g, "_").replace(/ /g, "_") === h;
+                    });
+                    if (hasOriginal) return false;
+                }
+                return true;
+            });
+
             visibleRows.forEach(row => {
                 const tr = document.createElement("tr");
                 const rowIdx = allData.indexOf(row);
@@ -4450,6 +4489,8 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
                         span.className = "td-leadtime-pill";
                         span.textContent = val;
                         td.appendChild(span);
+                    } else if (kind === "date") {
+                        td.textContent = feasFormatDateOnly(val);
                     } else {
                         td.textContent = val;
                     }
@@ -4648,7 +4689,12 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
                                 });
                             }
                         });
-                        const defaultAttendees = ["GAbbanah@tropicknits.com", "KNarrainen@tropicknits.com"];
+                        const defaultAttendees = [
+                            "CPOINEN@tropicknits.com",
+                            "K.Moonesawmy@tropicknits.com",
+                            "Fjumoorty@cdl-fabrics.com",
+                            "AMungly@tropicknits.com"
+                        ];
                         defaultAttendees.forEach(a => attendeesSet.add(a));
 
                         document.getElementById('inviteAttendees').value = Array.from(attendeesSet).join(', ') || '';
@@ -4904,7 +4950,7 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
                 const customerVal = customerKey ? (row[customerKey] || "-") : "-";
                 const statusVal = row['Status'] || "-";
                 const dateColKey = getDateColKey(row);
-                const dateVal = dateColKey ? (row[dateColKey] || "-") : "-";
+                const dateVal = dateColKey ? feasFormatDateOnly(row[dateColKey]) : "-";
 
                 tr._rowData = row;
 
@@ -5628,32 +5674,61 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
             }
         }
 
-        function handleImageFiles(files) {
-            files.forEach(file => {
-                if (!file.type.startsWith('image/')) return;
+        // ─────────────────────────────────────────
+        // IMAGE HANDLING — compression & preview
+        // ─────────────────────────────────────────
+        async function compressImage(file, maxWidth = 1600, maxHeight = 1600, quality = 0.8) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        let width = img.width;
+                        let height = img.height;
+                        if (width > maxWidth || height > maxHeight) {
+                            if (width > height) {
+                                height = Math.round((height * maxWidth) / width);
+                                width = maxWidth;
+                            } else {
+                                width = Math.round((width * maxHeight) / height);
+                                height = maxHeight;
+                            }
+                        }
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        const dataUrl = canvas.toDataURL('image/jpeg', quality);
+                        const base64 = dataUrl.split(',')[1];
+                        resolve({ dataUrl, base64 });
+                    };
+                };
+            });
+        }
+
+        async function handleImageFiles(files) {
+            for (const file of Array.from(files)) {
+                if (!file.type.startsWith('image/')) continue;
                 const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
                 if (!allowedTypes.includes(file.type)) {
                     showToast(`⚠️ "${file.name}" is not a supported format. Use JPG or PNG.`, "error");
-                    return;
+                    continue;
                 }
-                if (file.size > 5 * 1024 * 1024) {
-                    showToast(`⚠️ Image "${file.name}" exceeds the 5MB limit. Please choose a smaller file.`, "error");
-                    return;
-                }
-                const reader = new FileReader();
-                reader.onload = (ev) => {
-                    const dataUrl = ev.target.result;
-                    const base64 = dataUrl.split(',')[1];
-                    uploadedImages.push({
-                        file, dataUrl, name: file.name,
-                        base64: base64,
-                        mimeType: file.type
-                    });
-                    renderImagePreviews();
-                    updateImageButtonLabel();
-                };
-                reader.readAsDataURL(file);
-            });
+
+                // Compress if needed (even files < 5MB get optimized for PDF)
+                const { dataUrl, base64 } = await compressImage(file);
+
+                uploadedImages.push({
+                    file, dataUrl, name: file.name,
+                    base64: base64,
+                    mimeType: 'image/jpeg' // Unified to JPEG after compression
+                });
+                renderImagePreviews();
+                updateImageButtonLabel();
+            }
         }
 
         function renderImagePreviews() {
@@ -5733,25 +5808,14 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
                 mode: 'no-cors'
             })
                 .then(() => {
-                    console.log('✅ Image uploaded via fetch POST (no-cors) — assuming success');
-                    if (onSuccess) onSuccess({ success: true, note: 'Sent via no-cors fetch' });
+                    console.log('✅ Image uploaded (no-cors) — waiting for indexing...');
+                    setTimeout(() => {
+                        if (onSuccess) onSuccess({ success: true, note: 'Sent via no-cors fetch + delay' });
+                    }, 1000);
                 })
                 .catch(err => {
-                    console.warn('⚠️ Image upload fetch failed, trying JSONP fallback:', err);
-
-                    const params = new URLSearchParams(payload);
-                    const url = APPS_SCRIPT_URL + '?' + params.toString();
-
-                    const script = document.createElement('script');
-                    script.id = callbackName;
-                    script.src = url;
-                    script.onerror = () => {
-                        const el = document.getElementById(callbackName);
-                        if (el) el.remove();
-                        delete window[callbackName];
-                        if (onError) onError('Both fetch and JSONP failed: ' + err.message);
-                    };
-                    document.head.appendChild(script);
+                    console.error('❌ Image upload failed:', err);
+                    if (onError) onError('Image upload failed: ' + err.message);
                 });
         }
 
@@ -5815,8 +5879,10 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
 
             if (saveBtn) {
                 saveBtn.addEventListener('click', () => {
+                    console.log("[DEBUG] Save clicked. currentUploadRowIndex:", currentUploadRowIndex, "currentUploadRow:", currentUploadRow);
                     if (currentUploadRowIndex === -1 || !currentUploadRow) {
-                        showToast("⚠️ No row selected. Please try again.", "error");
+                        showToast("⚠️ No row selected. Please try again (click Upload on the row again).", "error");
+                        console.error("[ERROR] No row selected for upload.");
                         return;
                     }
                     handleSaveAndGeneratePDF();
@@ -5829,24 +5895,40 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
         // ─────────────────────────────────────────
         let currentUploadRowIndex = -1;
         let currentUploadRow = null;
+        let activeUploadTimeout = null; // To track and cancel pending cleanup timeouts
 
         function openUploadModal(row, rowIndex) {
+            console.log("[DEBUG] openUploadModal called for index:", rowIndex, "row:", row);
+            
+            // Cancel any pending cleanup from a previous upload
+            if (activeUploadTimeout) {
+                console.log("[DEBUG] Cancelling pending cleanup timeout.");
+                clearTimeout(activeUploadTimeout);
+                activeUploadTimeout = null;
+            }
+
             currentUploadRowIndex = rowIndex;
             currentUploadRow = row;
 
-            uploadedImages = [];
-            updateImageButtonLabel();
+            try {
+                uploadedImages = [];
+                updateImageButtonLabel();
 
-            // Normalise keys for easy lookup
-            const k = Object.keys(row).reduce((acc, curr) => {
-                acc[curr.toLowerCase()] = curr;
-                return acc;
-            }, {});
+                if (!row) {
+                    console.error("[ERROR] openUploadModal: row is undefined or null");
+                    return;
+                }
 
-            // ── Modal title ──
-            const titleVal = row[k["title"]] || row["Title"] || "";
-            const umTitle = document.getElementById("umModalTitle");
-            if (umTitle) umTitle.textContent = `Upload — ${titleVal || "Unknown Ref"}`;
+                // Normalise keys for easy lookup
+                const k = Object.keys(row).reduce((acc, curr) => {
+                    acc[curr.toLowerCase()] = curr;
+                    return acc;
+                }, {});
+
+                // ── Modal title ──
+                const titleVal = row[k["title"]] || row["Title"] || "";
+                const umTitle = document.getElementById("umModalTitle");
+                if (umTitle) umTitle.textContent = `Upload — ${titleVal || "Unknown Ref"}`;
 
             // ── Detail panel (read-only, reference layout) ──
             const requestIdRaw =
@@ -5888,33 +5970,6 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
                 kStr => kStr.toLowerCase().includes("folder path") || kStr.toLowerCase() === "folder_path"
             );
             umSetUploadFolderPathFromRow(row, folderPathKey);
-
-            // ── Browse button ──
-            const browseBtn = document.getElementById('umBrowseBtn');
-            if (browseBtn) {
-                if (folderPathKey && row[folderPathKey] && row[folderPathKey] !== "-") {
-                    const rawUrl = String(row[folderPathKey]);
-                    const fullUrl = rawUrl.startsWith('http') ? rawUrl : 'https://' + rawUrl;
-                    browseBtn.style.display = "inline-block";
-                    browseBtn.onclick = () => {
-                        browseBtn.textContent = 'Checking…';
-                        browseBtn.disabled = true;
-                        verifyTechpackLinkJSONP(fullUrl, (result) => {
-                            browseBtn.textContent = 'Browse';
-                            browseBtn.disabled = false;
-                            if (result && result.ok) {
-                                window.open(fullUrl, '_blank');
-                            } else {
-                                const errMsg = (result && result.error) ? result.error : 'Link unreachable';
-                                showToast('⚠️ Techpack link issue: ' + errMsg, 'error');
-                                window.open(fullUrl, '_blank');
-                            }
-                        });
-                    };
-                } else {
-                    browseBtn.style.display = "none";
-                }
-            }
 
             // ── Process Route ──
             const prKey = Object.keys(row).find(kStr =>
@@ -6007,6 +6062,15 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
             const modal = document.getElementById('uploadModal');
             if (modalOverlay) modalOverlay.classList.add('open');
             if (modal) modal.classList.add('open');
+
+            } catch (err) {
+                console.error("[ERROR] openUploadModal failed:", err);
+                // We still want to show the modal if possible so the user can see what's wrong
+                const modalOverlay = document.getElementById('uploadModalOverlay');
+                const modal = document.getElementById('uploadModal');
+                if (modalOverlay) modalOverlay.classList.add('open');
+                if (modal) modal.classList.add('open');
+            }
         }
 
         // ─────────────────────────────────────────
@@ -6015,28 +6079,6 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
         function clearUploadForm() {
             const prInput = document.getElementById('umProcessRouteInput');
             if (prInput) prInput.value = "";
-
-            const prDisplay = document.getElementById('umProcessRoute');
-            if (prDisplay) prDisplay.textContent = "—";
-
-            [
-                "umDetailRequestId",
-                "umDetailTitle",
-                "umDetailCustomer",
-                "umDetailCustDept",
-                "umDetailTklSeason",
-                "umDetailMainFabric",
-                "umDetailFabricHeader",
-                "umDetailPlName",
-                "umDetailStatus",
-                "umDetailCreated",
-                "umDetailCreatedBy"
-            ].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.textContent = "—";
-            });
-            const folderEl = document.getElementById("umDetailFolderPath");
-            if (folderEl) folderEl.textContent = "—";
 
             const fContainer = document.getElementById('umContentFabric');
             if (fContainer) {
@@ -6052,6 +6094,10 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
 
             uploadedImages = [];
             updateImageButtonLabel();
+            
+            // NOTE: We don't necessarily reset currentUploadRow here 
+            // because clear is often used while the modal is STILL OPEN.
+            console.log("[DEBUG] Upload form fields cleared.");
         }
 
         // ─────────────────────────────────────────
@@ -6126,6 +6172,11 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
             const modal = document.getElementById('uploadModal');
             if (overlay) overlay.classList.remove('open');
             if (modal) modal.classList.remove('open');
+
+            // Reset selection to prevent stale data
+            console.log("[DEBUG] Modal closed. Resetting selection.");
+            currentUploadRowIndex = -1;
+            currentUploadRow = null;
         }
 
         /** Merge fabric/problem sections + process route into row object before sheet sync. */
@@ -6453,6 +6504,21 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
             const sanitizedRow = String(sheetRow).trim();
             let finished = false;
 
+            const withPdfViewerParams = url => {
+                if (!url) return "";
+                return url + (url.includes("#") ? "&" : "#") + "zoom=page-width&pagemode=none";
+            };
+
+            const redirectToUrl = (url, isPdf = false) => {
+                const targetUrl = isPdf ? withPdfViewerParams(url) : url;
+                if (!targetUrl) return;
+                if (pdfWindow && !pdfWindow.closed) {
+                    pdfWindow.location.href = targetUrl;
+                } else {
+                    window.open(targetUrl, "_blank");
+                }
+            };
+
             const finish = response => {
                 if (finished) return;
                 finished = true;
@@ -6474,6 +6540,9 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
                 fabric_header: fabricHeader || "",
                 process_route: processRoute || ""
             });
+            if (FEAS_PDF_TEMPLATE_FILE_ID) {
+                params.set("templateFileId", FEAS_PDF_TEMPLATE_FILE_ID);
+            }
 
             const url = APPS_SCRIPT_URL + "?" + params.toString();
             const timeoutMs = 30000;
@@ -6496,12 +6565,12 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
                 if (response && response.success) {
                     console.log("PDF response:", JSON.stringify(response));
 
+                    // Get Folder Path from rowData or response if available
+                    const folderPath = (rowData && (rowData["Folder Path"] || rowData["folder_path"] || rowData["Folder_Path"]))
+                                     || (response && response.sharePointPath);
+                    const hasValidFolder = folderPath && folderPath.toString().startsWith("http");
+
                     if (response.downloadUrl) {
-                        try {
-                            if (pdfWindow && !pdfWindow.closed) pdfWindow.close();
-                        } catch (x) {
-                            /* ignore */
-                        }
                         const dl = response.downloadUrl;
                         const fname = response.fileName || "feasibility.pdf";
                         const a = document.createElement("a");
@@ -6511,24 +6580,24 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
                         document.body.appendChild(a);
                         a.click();
                         document.body.removeChild(a);
-                        const iframe = document.createElement("iframe");
-                        iframe.style.display = "none";
-                        iframe.setAttribute("aria-hidden", "true");
-                        iframe.src = dl;
-                        document.body.appendChild(iframe);
-                        setTimeout(() => iframe.remove(), 120000);
+                        
+                        // Redirect preview window to Folder Path, or fallback to PDF
+                        if (hasValidFolder) {
+                            redirectToUrl(folderPath, false);
+                        } else {
+                            redirectToUrl(dl, true);
+                        }
                     } else if (response.viewUrl) {
-                        if (pdfWindow && !pdfWindow.closed) pdfWindow.location.href = response.viewUrl;
-                        else window.open(response.viewUrl, "_blank");
+                        if (hasValidFolder) {
+                            redirectToUrl(folderPath, false);
+                        } else {
+                            redirectToUrl(response.viewUrl, true);
+                        }
+                    } else if (hasValidFolder) {
+                        redirectToUrl(folderPath, false);
                     } else if (pdfWindow && !pdfWindow.closed) {
                         pdfWindow.close();
                     }
-
-                    const feUrl =
-                        response.sharePointPath && response.sharePointPath.startsWith("http")
-                            ? response.sharePointPath
-                            : null;
-                    if (feUrl) setTimeout(() => window.open(feUrl, "_blank"), 1200);
 
                     btn.textContent = "Saved!";
                     // ── Increment daily upload counter ──
