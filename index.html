@@ -4529,32 +4529,36 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
         /** LocalStorage key scoped to today's date (YYYY-MM-DD). */
         function todayKey() {
             const d = new Date();
-            return 'feas_uploads_' + d.getFullYear() + '-' +
+            return d.getFullYear() + '-' +
                 String(d.getMonth() + 1).padStart(2, '0') + '-' +
                 String(d.getDate()).padStart(2, '0');
         }
 
-        /** Increment today's session upload counter in localStorage. */
+        /** 
+         * DEPRECATED: We now rely on server-side counting for multi-user sync.
+         * This function now only triggers a local UI refresh.
+         */
         function incrementDailyUploadCounter() {
-            const key = todayKey();
-            const prev = parseInt(localStorage.getItem(key) || '0', 10);
-            localStorage.setItem(key, String(prev + 1));
+            // No-op: server data is the source of truth
+            console.log("[SYNC] Counter incremented on server. Refreshing local data...");
         }
 
         /**
-         * Count today's uploads:
-         * - from allData rows with Status = "Complete" that have today in any date field
-         *   (Tehpack_uplaodDate, PL_Uploaded_Date, etc.) — best-effort
-         * - fallback: localStorage session counter for current day
+         * Count today's uploads based on server data (allData).
+         * Shared across all PCs because it filters the Google Sheet rows.
          */
         function countTodayUploads() {
-            const todayStr = todayKey().replace('feas_uploads_', ''); // YYYY-MM-DD
+            const todayStr = todayKey(); // YYYY-MM-DD
 
-            // Count from allData (server-side truth)
-            let fromData = allData.filter(function (row) {
+            return allData.filter(function (row) {
                 const s = String(row.Status || '').trim();
                 if (s !== 'Complete') return false;
-                // Check any upload/complete date column for today
+
+                // Priority check: specific completion date column
+                const compDate = row.Feasibility_Completion_Date || row["Feasibility Completion Date"];
+                if (compDate && String(compDate).includes(todayStr)) return true;
+
+                // Fallback: check any upload/tehpack date column for today
                 for (const k of Object.keys(row)) {
                     if (k.startsWith('_')) continue;
                     const kl = k.toLowerCase().replace(/_/g, ' ');
@@ -4565,15 +4569,12 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
                         kl.includes('completed')
                     ) {
                         const raw = String(row[k] || '').trim();
+                        // Google Sheets dates might come as strings or ISO
                         if (raw && (raw.startsWith(todayStr) || raw.includes(todayStr))) return true;
                     }
                 }
                 return false;
             }).length;
-
-            // Compare with localStorage session counter (takes the max to be safe)
-            const sessionCount = parseInt(localStorage.getItem(todayKey()) || '0', 10);
-            return Math.max(fromData, sessionCount);
         }
 
         function updateQuotaUI() {
@@ -4581,6 +4582,18 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
             const total = DAILY_QUOTA_LIMIT;
             if (quotaUsedEl) quotaUsedEl.textContent = used;
             if (quotaTotalEl) quotaTotalEl.textContent = total;
+            
+            // ✅ SYNC with Dashboard (on the same PC)
+            try {
+                localStorage.setItem('garmentcost_daily_quota', JSON.stringify({
+                    used: used,
+                    total: total,
+                    date: todayKey()
+                }));
+            } catch (e) {
+                console.warn("Dashboard sync failed:", e);
+            }
+
             const pct = (used / total) * 100;
             if (quotaProgress) {
                 quotaProgress.style.width = `${Math.min(pct, 100)}%`;
@@ -6600,8 +6613,16 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
                     }
 
                     btn.textContent = "Saved!";
-                    // ── Increment daily upload counter ──
-                    incrementDailyUploadCounter();
+                    
+                    // ✅ IMMEDIATE SYNC: Update the local row's completion date if not already set
+                    // so countTodayUploads() sees it even before the re-fetch
+                    if (rowData) {
+                        const today = todayKey();
+                        rowData["Feasibility_Completion_Date"] = today;
+                        rowData["Status"] = "Complete";
+                    }
+
+                    // ── Update quota values ──
                     quotaUsed = countTodayUploads();
                     updateQuotaUI();
 
