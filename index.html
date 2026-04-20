@@ -2240,24 +2240,51 @@
         }
 
         .date-detail-table th:nth-child(1) {
-            width: 15%;
+            width: 8%;
         }
 
+        /* C_NUMBER */
         .date-detail-table th:nth-child(2) {
-            width: 18%;
+            width: 12%;
         }
 
+        /* REF */
         .date-detail-table th:nth-child(3) {
-            width: 20%;
+            width: 12%;
         }
 
+        /* CUSTOMER */
         .date-detail-table th:nth-child(4) {
-            width: 27%;
+            width: 12%;
         }
 
+        /* MAIN FABRIC */
         .date-detail-table th:nth-child(5) {
-            width: 20%;
+            width: 10%;
         }
+
+        /* CUST DEPT */
+        .date-detail-table th:nth-child(6) {
+            width: 12%;
+        }
+
+        /* COSTING READY */
+        .date-detail-table th:nth-child(7) {
+            width: 10%;
+            text-align: center;
+        }
+
+        /* STATUS */
+        .date-detail-table th:nth-child(8) {
+            width: 14%;
+        }
+
+        /* MEETING DATE */
+        .date-detail-table th:nth-child(9) {
+            width: 10%;
+        }
+
+        /* ACTION */
 
         .date-detail-table th {
             background: #f8fafc;
@@ -2773,11 +2800,6 @@
             padding: 9px 28px;
             background: #2563eb;
             color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
             font-family: inherit;
             transition: background 0.15s;
         }
@@ -2940,6 +2962,76 @@
             text-overflow: ellipsis;
         }
 
+        .img-preview-card.uploading::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.7);
+            z-index: 2;
+        }
+
+        .img-preview-card.uploading::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 16px;
+            height: 16px;
+            margin: -8px 0 0 -8px;
+            border: 2px solid #2563eb;
+            border-top-color: transparent;
+            border-radius: 50%;
+            z-index: 3;
+            animation: img-spin 0.6s linear infinite;
+        }
+
+        @keyframes img-spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .img-preview-card.success::after {
+            content: "✓";
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            background: #22c55e;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+            z-index: 4;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .img-preview-card.error {
+            border-color: #ef4444 !important;
+        }
+
+        .img-preview-card.error::after {
+            content: "!";
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+            z-index: 4;
+        }
+
         .img-remove-btn {
             position: absolute;
             top: 4px;
@@ -3003,7 +3095,310 @@
         .img-done-btn:hover {
             background: #1d4ed8;
         }
+
+        /* User Profile Popup */
+        .profile-popup {
+            position: absolute;
+            top: 70px;
+            right: 24px;
+            width: 280px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            border: 1px solid #f1f5f9;
+            z-index: 2000;
+            display: none;
+            padding: 24px;
+        }
+
+        .profile-popup.visible {
+            display: block;
+            animation: slideDown 0.2s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-10px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .profile-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f1f5f9;
+            margin-bottom: 20px;
+        }
+
+        .profile-avatar-large {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            margin-bottom: 12px;
+            border: 2px solid #eff6ff;
+            object-fit: cover;
+        }
+
+        .profile-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+
+        .profile-email {
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .profile-role-badge {
+            margin-top: 10px;
+            padding: 4px 12px;
+            background: #eff6ff;
+            color: #2563eb;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        .profile-footer {
+            display: flex;
+            justify-content: center;
+        }
+
+        .sign-out-btn {
+            width: 100%;
+            padding: 10px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            color: #ef4444;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .sign-out-btn:hover {
+            background: #fef2f2;
+            border-color: #fca5a5;
+        }
+
+        /* View Icons in Stakeholder Grid */
+        .view-approval-btn {
+            background: none;
+            border: none;
+            color: #2563eb;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.15s;
+        }
+
+        .view-approval-btn:hover {
+            background: #eff6ff;
+            transform: scale(1.1);
+        }
+
+        /* Signature/Remarks View Overlay */
+        .approval-view-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .approval-view-modal {
+            background: white;
+            width: 100%;
+            max-width: 440px;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            padding: 28px;
+            position: relative;
+        }
+
+        .approval-view-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .approval-view-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .signature-preview-img {
+            width: 100%;
+            height: 180px;
+            object-fit: contain;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            background: #fff;
+            margin-bottom: 20px;
+        }
+
+        .view-section-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #64748b;
+            margin-bottom: 8px;
+            letter-spacing: 0.05em;
+        }
+
+        .remark-view-box {
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #334155;
+            border-left: 4px solid #2563eb;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+
+        .view-modal-close {
+            background: #f1f5f9;
+            border: none;
+            padding: 8px;
+            border-radius: 50%;
+            cursor: pointer;
+            color: #64748b;
+            transition: all 0.2s;
+            display: flex;
+        }
+
+        .view-modal-close:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        /* Stakeholder Grid Enhancement */
+        .stakeholder-section {
+            margin-top: 24px;
+            padding: 0 4px;
+        }
+
+        .stakeholder-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .stakeholder-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            background: #f8fafc;
+            border-radius: 10px;
+            border: 1px solid #f1f5f9;
+            transition: all 0.2s ease;
+        }
+
+        .stakeholder-item:hover {
+            background: #f1f5f9;
+            transform: translateX(4px);
+        }
+
+        .stakeholder-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .stakeholder-badge-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stakeholder-badge {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .badge-approved {
+            background-color: #ecfdf5;
+            color: #10b981;
+            border: 1px solid #d1fae5;
+        }
+
+        .badge-not-approved {
+            background-color: #fef2f2;
+            color: #ef4444;
+            border: 1px solid #fee2e2;
+        }
+
+        /* Progress Bar for Approvals */
+        .approval-progress-container {
+            margin-top: 20px;
+            padding: 16px;
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .approval-progress-header {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .approval-count-text {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .approval-progress-track {
+            height: 8px;
+            background: #f1f5f9;
+            border-radius: 10px;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .approval-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2563eb, #3b82f6);
+            width: 0%;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
     </style>
+
 </head>
 
 <body>
@@ -3033,6 +3428,7 @@
                     <a href="https://costing-home.vercel.app/">Home</a>
                     <button type="button" class="feas-nav-link active" data-tab="awaiting">Awaiting Feasibility</button>
                     <button type="button" class="feas-nav-link" data-tab="scheduled">Feasibility Schedule</button>
+                    <button type="button" class="feas-nav-link" data-tab="approval">Feasibility Approval</button>
                     <button type="button" class="feas-nav-link" data-tab="complete">Complete</button>
                     <button type="button" class="feas-nav-link" data-tab="calendar">Calendar</button>
                 </div>
@@ -3045,9 +3441,53 @@
                         <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
                     </svg>
                 </button>
-                <img class="avatar" src="https://i.pravatar.cc/150?u=feasibility_user" alt="User Profile" />
+                <div style="position: relative;">
+                    <img class="avatar" src="https://i.pravatar.cc/150?u=feasibility_user" alt="User Profile"
+                        id="userAvatar" style="cursor: pointer;" />
+                    <div class="profile-popup" id="profilePopup">
+                        <div class="profile-header">
+                            <img src="https://i.pravatar.cc/150?u=feasibility_user" class="profile-avatar-large"
+                                id="popupAvatar" />
+                            <div class="profile-name" id="popupName">Guest User</div>
+                            <div class="profile-email" id="popupEmail">guest@example.com</div>
+                            <div class="profile-role-badge" id="popupRole">REPORTER</div>
+                        </div>
+                        <div class="profile-footer">
+                            <button class="sign-out-btn" id="signOutBtn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                    <polyline points="16 17 21 12 16 7"></polyline>
+                                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                                </svg>
+                                <span>Sign Out</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </nav>
+
+        <!-- Signature/Remarks View Overlay -->
+        <div class="approval-view-overlay" id="approvalViewOverlay">
+            <div class="approval-view-modal">
+                <div class="approval-view-header">
+                    <h3 id="viewStakeholderName">Fariad Approval</h3>
+                    <button class="view-modal-close" onclick="closeApprovalView()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <span class="view-section-label">Signature</span>
+                <img src="" class="signature-preview-img" id="viewSignImg" />
+                <span class="view-section-label">Remarks</span>
+                <div class="remark-view-box" id="viewRemarkText">No remarks provided.</div>
+            </div>
+        </div>
+
 
         <main class="main-content feas-main" style="max-width: 1440px; padding: 40px 24px;">
 
@@ -3069,6 +3509,12 @@
                                 <span class="feas-hero-badge-dot feas-hero-badge-dot--blue" aria-hidden="true"></span>
                                 <span>Scheduled</span>
                                 <span id="heroBadgeScheduled" class="feas-hero-badge-value">0</span>
+                            </div>
+                            <div class="feas-hero-badge"
+                                style="background:#fff7ed; color:#c2410c; border:1px solid #ffedd5;">
+                                <span class="feas-hero-badge-dot" style="background:#f97316;" aria-hidden="true"></span>
+                                <span>Approval</span>
+                                <span id="heroBadgeApproval" class="feas-hero-badge-value">0</span>
                             </div>
                             <div class="feas-hero-badge feas-hero-badge--complete">
                                 <span class="feas-hero-badge-dot feas-hero-badge-dot--green" aria-hidden="true"></span>
@@ -3220,14 +3666,18 @@
                                 <span id="dateDetailCount">0 styles</span>
                             </div>
                             <div class="table-container"
-                                style="border-radius: 0; overflow: hidden; padding: 16px 24px;">
+                                style="border-radius: 0; overflow-x: auto; padding: 16px 24px;">
                                 <table class="date-detail-table">
                                     <thead>
                                         <tr>
+                                            <th>C_Number</th>
                                             <th>Ref</th>
                                             <th>Customer</th>
+                                            <th>Main Fabric</th>
+                                            <th>Cust Dept</th>
+                                            <th>Costing Ready</th>
                                             <th>Status</th>
-                                            <th>Feasibility Date Schedule</th>
+                                            <th>Feasibility Date</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -3280,7 +3730,50 @@
             </div>
 
             <!-- ═══════════════════════════════════════
-             TAB 3 — COMPLETE
+                 TAB 3 — FEASIBILITY APPROVAL
+            ════════════════════════════════════════ -->
+            <div class="tab-view feas-tab-panel" id="view-approval">
+                <section class="right-panel dash-complete-panel" style="width: 100%;">
+                    <div class="dash-card">
+                        <div class="dash-card-toolbar"
+                            style="justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                            <h2 style="font-size: 18px; margin: 0;">Awaiting Approval</h2>
+                            <span id="exportSlotApproval"></span>
+                        </div>
+                        <div id="approval-empty-state"
+                            style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: #94a3b8; padding: 64px 24px 80px; width: 100%;">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1"
+                                stroke-width="1.5">
+                                <path d="M9 11l3 3L22 4" />
+                                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                            </svg>
+                            <h2 style="margin-top: 16px; font-size: 18px; color: #64748b;">No items awaiting approval
+                            </h2>
+                            <p style="font-size: 14px;">Styles that require final feasibility approval will appear here.
+                            </p>
+                        </div>
+
+                        <div id="approval-table-container" style="display: none; width: 100%; overflow-x: auto;">
+                            <table class="date-detail-table" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>C_Number</th>
+                                        <th>Ref</th>
+                                        <th>Customer</th>
+                                        <th style="text-align: center;">Status</th>
+                                        <th>Ready Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="approval-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- ═══════════════════════════════════════
+             TAB 4 — COMPLETE
         ════════════════════════════════════════ -->
             <div class="tab-view feas-tab-panel" id="view-complete">
                 <section class="right-panel dash-complete-panel">
@@ -3305,7 +3798,7 @@
             </div>
 
             <!-- ═══════════════════════════════════════
-                 TAB 4 — COMPLETED CALENDAR
+                 TAB 5 — COMPLETED CALENDAR
             ════════════════════════════════════════ -->
             <div class="tab-view feas-tab-panel" id="view-calendar">
                 <section class="right-panel dash-complete-panel" style="width: 100%;">
@@ -3367,8 +3860,7 @@
                 <div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px;">
                     <div>
                         <label
-                            style="display: block; font-size: 12px; font-weight: 700; color: #64748b; margin-bottom: 6px;">REQUEST
-                            ID</label>
+                            style="display: block; font-size: 12px; font-weight: 700; color: #64748b; margin-bottom: 6px;">C_NUMBER</label>
                         <input type="text" id="filter-id" list="id-list-tp" class="btn-outline"
                             style="width: 100%; text-align: left; padding: 10px;"
                             placeholder="Search or select ID..." />
@@ -3376,8 +3868,8 @@
                     </div>
                     <div>
                         <label
-                            style="display: block; font-size: 12px; font-weight: 700; color: #64748b; margin-bottom: 6px;">STYLE
-                            NAME</label>
+                            style="display: block; font-size: 12px; font-weight: 700; color: #64748b; margin-bottom: 6px;">CUS
+                            REF</label>
                         <input type="text" id="filter-style" list="style-list-tp" class="btn-outline"
                             style="width: 100%; text-align: left; padding: 10px;"
                             placeholder="Search or select Style..." />
@@ -3394,7 +3886,7 @@
                     <div>
                         <label
                             style="display: block; font-size: 12px; font-weight: 700; color: #64748b; margin-bottom: 6px;">PL
-                            NAME / PM NAME</label>
+                            NAME</label>
                         <input type="text" id="filter-pl" list="pl-list-tp" class="btn-outline"
                             style="width: 100%; text-align: left; padding: 10px;"
                             placeholder="Search or select PL..." />
@@ -3678,7 +4170,99 @@
         <div class="popup-style-list" id="popupStyleList"></div>
     </div>
 
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         NEW: APPROVAL DETAILS MODAL
+    ════════════════════════════════════════ -->
+    <div class="upload-modal-overlay" id="approvalDetailsModalOverlay"></div>
+    <div class="upload-modal approval-details-modal" id="approvalDetailsModal">
+        <div class="upload-modal-header">
+            <span class="upload-modal-title" id="adModalTitle">Request Details</span>
+            <button class="upload-modal-close" id="approvalDetailsModalClose">&times;</button>
+        </div>
+
+        <div class="um-detail-card">
+            <div class="um-detail-grid um-detail-grid--row1">
+                <div class="um-detail-field">
+                    <span class="um-detail-label">Request ID</span>
+                    <span class="um-detail-value" id="adDetailRequestId">—</span>
+                </div>
+                <div class="um-detail-field">
+                    <span class="um-detail-label">Title</span>
+                    <span class="um-detail-value" id="adDetailTitle">—</span>
+                </div>
+                <div class="um-detail-field">
+                    <span class="um-detail-label">Customer</span>
+                    <span class="um-detail-value" id="adDetailCustomer">—</span>
+                </div>
+                <div class="um-detail-field">
+                    <span class="um-detail-label">Main fabric</span>
+                    <span class="um-detail-value" id="adDetailMainFabric">—</span>
+                </div>
+                <div class="um-detail-field">
+                    <span class="um-detail-label">Status</span>
+                    <span class="um-detail-value" id="adDetailStatus">—</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stakeholder-section">
+            <div class="um-section-title-text">Stakeholder Approval Status</div>
+            <div class="stakeholder-grid" id="adStakeholderGrid">
+                <!-- Will be populated by JS -->
+            </div>
+            
+            <!-- Dynamic Progress Bar -->
+            <div class="approval-progress-container">
+                <div class="approval-progress-header">
+                    <span class="approval-count-text" id="adApprovalCountText">0/8 Approved</span>
+                </div>
+                <div class="approval-progress-track">
+                    <div class="approval-progress-fill" id="adApprovalProgressFill"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="upload-modal-footer">
+            <button class="um-clear-btn" id="adCloseBtn">Close</button>
+            <button class="um-save-btn" id="adApprovalBtn">Approval</button>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         NEW: APPROVAL ACTION MODAL (Remarks & Signature)
+    ════════════════════════════════════════ -->
+    <div class="upload-modal-overlay" id="approvalActionModalOverlay"></div>
+    <div class="upload-modal" id="approvalActionModal" style="max-width: 500px;">
+        <div class="upload-modal-header">
+            <span class="upload-modal-title">Final Approval</span>
+            <button class="upload-modal-close" id="approvalActionModalClose">&times;</button>
+        </div>
+
+        <div class="um-section">
+            <label class="um-detail-label">Remarks</label>
+            <textarea id="approvalRemarks" class="remarks-textarea" placeholder="Add any comments here..."></textarea>
+        </div>
+
+        <div class="um-section">
+            <label class="um-detail-label">Signature</label>
+            <div class="signature-container">
+                <canvas id="signaturePad" class="signature-pad"></canvas>
+                <div class="signature-actions">
+                    <button id="clearSignature" class="signature-clear-btn">Clear Signature</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="upload-modal-footer">
+            <button class="um-clear-btn" id="approvalActionCancelBtn">Cancel</button>
+            <button class="um-save-btn" id="approvalActionSubmitBtn">Submit</button>
+        </div>
+    </div>
+
     <!-- Toast Notifications -->
+
     <div id="toastContainer" class="toast-container"></div>
 
     <!-- Libraries -->
@@ -3698,6 +4282,8 @@
         const ROWS_PER_PAGE = 15;
 
         let allData = [];
+        let currentStakeholderSlot = "";
+
         let currentIndex = 0;
         const DAILY_QUOTA_LIMIT = 15;
         let quotaUsed = 0;   // uploads done today (from allData + localStorage)
@@ -3772,22 +4358,29 @@
                     ? document.getElementById("exportSlotAwaiting")
                     : tab === "scheduled"
                         ? document.getElementById("exportSlotScheduled")
-                        : document.getElementById("exportSlotComplete");
+                        : tab === "approval"
+                            ? document.getElementById("exportSlotApproval")
+                            : document.getElementById("exportSlotComplete");
             if (slot) slot.appendChild(downloadBtn);
         }
 
         function updateHeroBadges() {
             const awaitingEl = document.getElementById("heroBadgeAwaiting");
             const scheduledEl = document.getElementById("heroBadgeScheduled");
+            const approvalEl = document.getElementById("heroBadgeApproval");
             const completeEl = document.getElementById("heroBadgeComplete");
+
             const awaiting = allData.filter(r => (r.Status || "") === "Awaiting Feasibility").length;
             const scheduled = allData.filter(r => {
                 const s = r.Status || "";
                 return s === "Feasibility Scheduled" || s === "Awaiting Meeting";
             }).length;
-            const complete = allData.filter(r => (r.Status || "") === "Complete").length;
+            const approval = allData.filter(r => (r.Status || "") === "Awaiting Approval").length;
+            const complete = allData.filter(r => (r.Status || "").toLowerCase() === "complete").length;
+
             if (awaitingEl) awaitingEl.textContent = String(awaiting);
             if (scheduledEl) scheduledEl.textContent = String(scheduled);
+            if (approvalEl) approvalEl.textContent = String(approval);
             if (completeEl) completeEl.textContent = String(complete);
         }
 
@@ -3831,7 +4424,68 @@
             return "text";
         }
 
+        // --- IDENTITY & STAKEHOLDERS ---
+        const STAKEHOLDER_MAP = {
+            "fjumoorty@cdl-fabrics.com": "Fariad",
+            "K.Moonesawmy@tropicknits.com": "Kevin",
+            "CPOINEN@tropicknits.com": "Poinen",
+            "JADAM@tropicknits.com": "Jean Michel/Nazeem",
+            "mgoorvadoo@tropicknits.com": "Jean Michel/Nazeem",
+            "RKISOONA@tropicknits.com": "Reena",
+            "AMungly@tropicknits.com": "Asharf.M",
+            "K.Iswardeo@tropicknits.com": "Kirpal",
+            "mcseeburn@tropicknits.com": "Seeburn"
+        };
+        const ADMIN_EMAIL = "tropicfabiosandy@gmail.com";
+        const STAKEHOLDER_NAMES = ["Fariad", "Kevin", "Poinen", "Jean Michel/Nazeem", "Reena", "Asharf.M", "Kirpal", "Seeburn"];
+
+        function getLoggedInUser() {
+            try {
+                const user = JSON.parse(localStorage.getItem('REMEMBERED_USER_KEY') || 'null');
+                return user || { email: "guest@example.com", name: "Guest User" };
+            } catch (e) {
+                return { email: "guest@example.com", name: "Guest User" };
+            }
+        }
+
+        function getUserRole(email) {
+            if (email === ADMIN_EMAIL) return "ADMIN";
+            if (STAKEHOLDER_MAP[email]) return "STAKEHOLDER";
+            return "REPORTER";
+        }
+
+        function initUserProfile() {
+            const user = getLoggedInUser();
+            const role = getUserRole(user.email);
+
+            document.getElementById('popupName').textContent = user.name || "Unknown User";
+            document.getElementById('popupEmail').textContent = user.email;
+            document.getElementById('popupRole').textContent = role;
+
+            const avatarUrl = `https://i.pravatar.cc/150?u=${user.email}`;
+            document.getElementById('userAvatar').src = avatarUrl;
+            document.getElementById('popupAvatar').src = avatarUrl;
+
+            document.getElementById('userAvatar').addEventListener('click', (e) => {
+                e.stopPropagation();
+                document.getElementById('profilePopup').classList.toggle('visible');
+            });
+
+            document.getElementById('signOutBtn').addEventListener('click', () => {
+                localStorage.removeItem('REMEMBERED_USER_KEY');
+                window.location.href = "index_18_fixed.html";
+            });
+
+            document.addEventListener('click', (e) => {
+                const popup = document.getElementById('profilePopup');
+                if (popup && popup.classList.contains('visible') && !popup.contains(e.target) && e.target.id !== 'userAvatar') {
+                    popup.classList.remove('visible');
+                }
+            });
+        }
+
         function feasTableStatusClass(status) {
+
             const s = (status || "").toLowerCase();
             if (s.includes("complete")) return "completed";
             if (s.includes("scheduled") || s.includes("meeting")) return "in-progress";
@@ -4185,6 +4839,8 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
                     renderScheduleCalendar(schedCalMonth, schedCalYear);
                     dateDetailSection.classList.remove("visible");
                     updateSchedPickerSelectedLabel();
+                } else if (tab === "approval") {
+                    renderApprovalPage();
                 } else if (tab === "complete") {
                     renderCompletedPage();
                 } else if (tab === "calendar") {
@@ -4197,62 +4853,96 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
         // 1. Fetch Feasibility tab via unified Apps Script (?sheet=Feasibility)
         // ─────────────────────────────────────────
         async function loadFeasibilityFromAppsScript() {
-            const url = APPS_SCRIPT_URL + "?sheet=" + encodeURIComponent("Feasibility") + "&t=" + Date.now();
-            const res = await fetch(url, { method: "GET", mode: "cors", cache: "no-store" });
-            const text = await res.text();
-            const rows = JSON.parse(text.replace(/^\uFEFF/, "").trim());
-            if (rows && rows.error) throw new Error(rows.error);
-            if (!Array.isArray(rows)) throw new Error("Expected JSON array from Apps Script");
+            return new Promise((resolve, reject) => {
+                const callbackName = "loadFeasCallback_" + Date.now();
+                const url = APPS_SCRIPT_URL + "?sheet=" + encodeURIComponent("Feasibility") + "&callback=" + callbackName + "&t=" + Date.now();
 
-            allData = rows.map(function (row, rowIdx) {
-                var rowData = {};
-                if (row.raw && typeof row.raw === "object") {
-                    Object.keys(row.raw).forEach(function (k) {
-                        rowData[k] = row.raw[k];
-                    });
-                }
-                if (row.status !== undefined && row.status !== "") rowData.Status = row.status;
-                if (row.style && rowData.Title === undefined && rowData["Title"] === undefined) rowData.Title = row.style;
-                if (row.customer && rowData.Customer === undefined) rowData.Customer = row.customer;
-                if (row.assignee && rowData.PL_Name === undefined && rowData["PL Name"] === undefined) rowData.PL_Name = row.assignee;
-                rowData._originalStatus = rowData.Status || rowData["Status"] || "Awaiting Feasibility";
-                rowData._sheetRow = rowIdx + 2;
-                if (!rowData.Status && !rowData["Status"]) rowData.Status = "Awaiting Feasibility";
-                return rowData;
-            });
-            allData.reverse();
+                window[callbackName] = function (rows) {
+                    try {
+                        const el = document.getElementById(callbackName);
+                        if (el) el.remove();
+                        delete window[callbackName];
 
-            if (allData.length > 0) {
-                var allKeys = Object.keys(allData[0]).filter(function (h) {
-                    return h !== "_originalStatus" && h !== "_sheetRow";
-                });
+                        if (rows && rows.error) {
+                            showToast("❌ Error: " + rows.error, "error");
+                            reject(new Error(rows.error));
+                            return;
+                        }
 
-                // ✅ FIX: Filter out redundant normalized keys (e.g., keep "C Number", hide "c_number")
-                var headers = allKeys.filter(function (h) {
-                    var normalized = h.toLowerCase().replace(/\s+/g, "_").replace(/ /g, "_");
-                    if (h === normalized) {
-                        var hasOriginal = allKeys.some(function (k) {
-                            return k !== h && k.toLowerCase().replace(/\s+/g, "_").replace(/ /g, "_") === h;
+                        if (!Array.isArray(rows)) {
+                            showToast("❌ Unexpected data format from server", "error");
+                            reject(new Error("Expected JSON array"));
+                            return;
+                        }
+
+                        allData = rows.map(function (row, rowIdx) {
+                            var rowData = {};
+                            if (row.raw && typeof row.raw === "object") {
+                                Object.keys(row.raw).forEach(function (k) {
+                                    rowData[k] = row.raw[k];
+                                });
+                            }
+                            if (row.status !== undefined && row.status !== "") rowData.Status = row.status;
+                            if (row.style && rowData.Title === undefined && rowData["Title"] === undefined) rowData.Title = row.style;
+                            if (row.customer && rowData.Customer === undefined) rowData.Customer = row.customer;
+                            if (row.assignee && rowData.PL_Name === undefined && rowData["PL Name"] === undefined) rowData.PL_Name = row.assignee;
+                            rowData._originalStatus = rowData.Status || rowData["Status"] || "Awaiting Feasibility";
+                            rowData._sheetRow = rowIdx + 2;
+                            if (!rowData.Status && !rowData["Status"]) rowData.Status = "Awaiting Feasibility";
+                            return rowData;
                         });
-                        if (hasOriginal) return false;
-                    }
-                    return true;
-                });
+                        allData.reverse();
 
-                console.log("Feasibility sheet headers (cleaned):", headers);
-                populateDropdowns();
-                renderTableHeaders(headers);
-                renderTablePage();
-                updateFeasClearFiltersButtonVisibility();
-            } else {
-                dataTableBody.innerHTML = "<tr><td colspan='100%'>No data found in Feasibility sheet.</td></tr>";
-                updateHeroBadges();
-                updatePaginationUI();
-            }
+                        if (allData.length > 0) {
+                            var allKeys = Object.keys(allData[0]).filter(function (h) {
+                                return h !== "_originalStatus" && h !== "_sheetRow";
+                            });
+
+                            var headers = allKeys.filter(function (h) {
+                                var normalized = h.toLowerCase().replace(/\s+/g, "_").replace(/ /g, "_");
+                                if (h === normalized) {
+                                    var hasOriginal = allKeys.some(function (k) {
+                                        return k !== h && k.toLowerCase().replace(/\s+/g, "_").replace(/ /g, "_") === h;
+                                    });
+                                    if (hasOriginal) return false;
+                                }
+                                return true;
+                            });
+
+                            populateDropdowns();
+                            renderTableHeaders(headers);
+                            renderTablePage();
+                            updateHeroBadges(); // Refresh badges after load
+                            updateFeasClearFiltersButtonVisibility();
+                        } else {
+                            dataTableBody.innerHTML = "<tr><td colspan='100%'>No data found in Feasibility sheet.</td></tr>";
+                            updateHeroBadges();
+                            updatePaginationUI();
+                        }
+                        resolve();
+
+                    } catch (err) {
+                        reject(err);
+                    }
+                };
+
+                const script = document.createElement("script");
+                script.id = callbackName;
+                script.src = url;
+                script.onerror = () => {
+                    delete window[callbackName];
+                    showToast("❌ Connection error. Please verify your Apps Script URL and Deployment.", "error");
+                    reject(new Error("JSONP Load Failed"));
+                };
+                document.head.appendChild(script);
+            });
         }
 
+
         document.addEventListener("DOMContentLoaded", () => {
+            initUserProfile();
             const options = { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };
+
             reviewDateEl.textContent = currentDate.toLocaleDateString('en-US', options);
 
             moveExportButton("awaiting");
@@ -4552,7 +5242,7 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
 
             return allData.filter(function (row) {
                 const s = String(row.Status || row.status || '').trim().toLowerCase();
-                if (s !== 'complete') return false;
+                if (s !== 'complete' && s !== 'awaiting approval') return false;
 
                 // Priority check: specific completion date column
                 const compDateKey = Object.keys(row).find(k => {
@@ -4586,7 +5276,7 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
             const total = DAILY_QUOTA_LIMIT;
             if (quotaUsedEl) quotaUsedEl.textContent = used;
             if (quotaTotalEl) quotaTotalEl.textContent = total;
-            
+
             // ✅ SYNC with Dashboard (on the same PC)
             try {
                 localStorage.setItem('garmentcost_daily_quota', JSON.stringify({
@@ -4962,19 +5652,23 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
             rows.forEach(row => {
                 const tr = document.createElement("tr");
 
+                const idVal = feasDisplayId(row);
                 const refVal = row['Title'] || row['title'] || "-";
-                const customerKey = Object.keys(row).find(k => k.toLowerCase() === 'customer') || null;
-                const customerVal = customerKey ? (row[customerKey] || "-") : "-";
+                const customerVal = feasDisplayCustomer(row);
+                const fabricVal = feasDisplayMainFabric(row);
+                const deptVal = feasDisplayCustomerDept(row);
+                const readyVal = feasDisplayReadyDate(row);
                 const statusVal = row['Status'] || "-";
                 const dateColKey = getDateColKey(row);
                 const dateVal = dateColKey ? feasFormatDateOnly(row[dateColKey]) : "-";
 
                 tr._rowData = row;
 
-                const cells = [refVal, customerVal, statusVal, dateVal];
+                const cells = [idVal, refVal, customerVal, fabricVal, deptVal, readyVal, statusVal, dateVal];
                 cells.forEach((val, ci) => {
                     const td = document.createElement("td");
-                    if (ci === 2) {
+                    if (ci === 6) { // Status column
+                        td.style.textAlign = "center";
                         const span = document.createElement("span");
                         const isAwaiting = val === "Awaiting Feasibility";
                         span.className = 'status-badge ' + (isAwaiting ? '' : 'scheduled');
@@ -5002,6 +5696,69 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
 
             dateDetailSection.classList.add("visible");
             dateDetailSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // ─────────────────────────────────────────
+        // APPROVAL TAB RENDERING
+        // ─────────────────────────────────────────
+        function renderApprovalPage() {
+            const container = document.getElementById("approval-table-container");
+            const body = document.getElementById("approval-table-body");
+            const emptyState = document.getElementById("approval-empty-state");
+            if (!container || !body || !emptyState) return;
+
+            const approvalRows = allData.filter(r => (r.Status || "") === "Awaiting Approval");
+
+            if (approvalRows.length === 0) {
+                emptyState.style.display = "flex";
+                container.style.display = "none";
+            } else {
+                emptyState.style.display = "none";
+                container.style.display = "block";
+                body.innerHTML = "";
+
+                approvalRows.forEach(row => {
+                    const tr = document.createElement("tr");
+
+                    const idVal = feasDisplayId(row);
+                    const refVal = row['Title'] || row['title'] || "-";
+                    const customerVal = feasDisplayCustomer(row);
+                    const statusVal = row['Status'] || "-";
+
+                    const dateVal = feasDisplayReadyDate(row);
+
+                    [idVal, refVal, customerVal, statusVal, dateVal].forEach((val, ci) => {
+                        const td = document.createElement("td");
+                        if (ci === 3) { // Status
+                            td.style.textAlign = "center";
+                            const span = document.createElement("span");
+                            span.className = 'status-badge in-progress'; // Use amber for approval
+                            span.textContent = val;
+                            td.appendChild(span);
+                        } else {
+                            td.textContent = val;
+                        }
+                        tr.appendChild(td);
+                    });
+
+                    const actionTd = document.createElement("td");
+                    const detailsBtn = document.createElement("button");
+                    detailsBtn.className = "upload-btn";
+                    detailsBtn.style.background = "#eff6ff";
+                    detailsBtn.style.color = "#2563eb";
+                    detailsBtn.style.borderColor = "#bfdbfe";
+                    detailsBtn.textContent = "DETAILS";
+                    detailsBtn.addEventListener("click", () => {
+                        const rowIdx = allData.findIndex(r => r === row);
+                        openApprovalDetailsModal(row, rowIdx);
+                    });
+                    actionTd.appendChild(detailsBtn);
+                    tr.appendChild(actionTd);
+
+
+                    body.appendChild(tr);
+                });
+            }
         }
 
         // ─────────────────────────────────────────
@@ -5694,12 +6451,14 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
         // ─────────────────────────────────────────
         // IMAGE HANDLING — compression & preview
         // ─────────────────────────────────────────
-        async function compressImage(file, maxWidth = 1600, maxHeight = 1600, quality = 0.8) {
-            return new Promise((resolve) => {
+        async function compressImage(file, maxWidth = 1000, maxHeight = 1000, quality = 0.7) {
+            return new Promise((resolve, reject) => {
                 const reader = new FileReader();
+                reader.onerror = () => reject(new Error("Failed to read file"));
                 reader.readAsDataURL(file);
                 reader.onload = (event) => {
                     const img = new Image();
+                    img.onerror = () => reject(new Error("Failed to decode image. It might be too large or corrupted."));
                     img.src = event.target.result;
                     img.onload = () => {
                         let width = img.width;
@@ -5713,14 +6472,18 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
                                 height = maxHeight;
                             }
                         }
-                        const canvas = document.createElement('canvas');
-                        canvas.width = width;
-                        canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-                        const dataUrl = canvas.toDataURL('image/jpeg', quality);
-                        const base64 = dataUrl.split(',')[1];
-                        resolve({ dataUrl, base64 });
+                        try {
+                            const canvas = document.createElement('canvas');
+                            canvas.width = width;
+                            canvas.height = height;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, width, height);
+                            const dataUrl = canvas.toDataURL('image/jpeg', quality);
+                            const base64 = dataUrl.split(',')[1];
+                            resolve({ dataUrl, base64 });
+                        } catch (e) {
+                            reject(new Error("Browser ran out of memory while compressing this image."));
+                        }
                     };
                 };
             });
@@ -5731,18 +6494,23 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
                 if (!file.type.startsWith('image/')) continue;
                 const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
                 if (!allowedTypes.includes(file.type)) {
-                    showToast(`⚠️ "${file.name}" is not a supported format. Use JPG or PNG.`, "error");
+                    showToast(`⚠️ "${file.name}" is not a supported format (JPG/PNG only).`, "error");
                     continue;
                 }
 
-                // Compress if needed (even files < 5MB get optimized for PDF)
-                const { dataUrl, base64 } = await compressImage(file);
-
-                uploadedImages.push({
-                    file, dataUrl, name: file.name,
-                    base64: base64,
-                    mimeType: 'image/jpeg' // Unified to JPEG after compression
-                });
+                try {
+                    // Compress to 1200px to ensure it fits PDF memory limits
+                    const { dataUrl, base64 } = await compressImage(file);
+                    uploadedImages.push({
+                        file, dataUrl, name: file.name,
+                        base64: base64,
+                        mimeType: 'image/jpeg',
+                        status: 'idle'
+                    });
+                } catch (err) {
+                    console.error("Compression error:", err);
+                    showToast(`❌ Error: "${file.name}" is too large or complex for the browser to process. Try a smaller version.`, "error");
+                }
                 renderImagePreviews();
                 updateImageButtonLabel();
             }
@@ -5758,11 +6526,12 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
             }
             uploadedImages.forEach((img, idx) => {
                 const card = document.createElement('div');
-                card.className = 'img-preview-card';
+                const statusClass = img.status === 'uploading' ? 'uploading' : (img.status === 'success' ? 'success' : (img.status === 'error' ? 'error' : ''));
+                card.className = `img-preview-card ${statusClass}`;
                 card.innerHTML = `
             <img src="${img.dataUrl}" alt="${img.name}" />
             <div class="img-preview-name">${img.name}</div>
-            <button class="img-remove-btn" data-idx="${idx}" title="Remove">&times;</button>
+            ${img.status !== 'uploading' ? `<button class="img-remove-btn" data-idx="${idx}" title="Remove">&times;</button>` : ''}
         `;
                 previewGrid.appendChild(card);
             });
@@ -5916,7 +6685,7 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
 
         function openUploadModal(row, rowIndex) {
             console.log("[DEBUG] openUploadModal called for index:", rowIndex, "row:", row);
-            
+
             // Cancel any pending cleanup from a previous upload
             if (activeUploadTimeout) {
                 console.log("[DEBUG] Cancelling pending cleanup timeout.");
@@ -5947,138 +6716,138 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
                 const umTitle = document.getElementById("umModalTitle");
                 if (umTitle) umTitle.textContent = `Upload — ${titleVal || "Unknown Ref"}`;
 
-            // ── Detail panel (read-only, reference layout) ──
-            const requestIdRaw =
-                getColValueRaw(row, ["C_Number", "C Number", "CNumber", "Request_ID", "Request ID"]) || "";
-            const requestId =
-                requestIdRaw || (feasDisplayId(row) === "-" ? "" : feasDisplayId(row));
-            umSetUploadDetailText("umDetailRequestId", requestId);
-            umSetUploadDetailText("umDetailTitle", titleVal);
-            umSetUploadDetailText(
-                "umDetailCustomer",
-                getColValueRaw(row, ["Customer", "customer"]) || row[k["customer"]] || ""
-            );
-            const custDept = feasDisplayCustomerDept(row);
-            umSetUploadDetailText("umDetailCustDept", custDept === "-" ? "" : custDept);
-            umSetUploadDetailText("umDetailTklSeason", feasDisplayTklSeason(row));
-            const mainFab = feasDisplayMainFabric(row);
-            umSetUploadDetailText("umDetailMainFabric", mainFab === "-" ? "" : mainFab);
-            const fabHdr = feasDisplayFabricHeader(row);
-            umSetUploadDetailText("umDetailFabricHeader", fabHdr === "-" ? "" : fabHdr);
-
-            const plNameKey = Object.keys(row).find(kk =>
-                kk.toLowerCase() === "pl_name" ||
-                kk.toLowerCase() === "pl name" ||
-                kk.toLowerCase() === "plname"
-            );
-            umSetUploadDetailText(
-                "umDetailPlName",
-                (plNameKey ? row[plNameKey] : null) ||
-                getColValueRaw(row, ["PL_Name", "PL Name", "PLName"]) ||
-                row[k["pl name"]] ||
-                row[k["pl_name"]] ||
-                ""
-            );
-            umSetUploadDetailText("umDetailStatus", row.Status || row["Status"] || "");
-            umSetUploadDetailText("umDetailCreated", feasDisplayCreatedForDetail(row));
-            umSetUploadDetailText("umDetailCreatedBy", feasDisplayCreatedByForDetail(row));
-
-            const folderPathKey = Object.keys(row).find(
-                kStr => kStr.toLowerCase().includes("folder path") || kStr.toLowerCase() === "folder_path"
-            );
-            umSetUploadFolderPathFromRow(row, folderPathKey);
-
-            // ── Process Route ──
-            const prKey = Object.keys(row).find(kStr =>
-                kStr.toLowerCase() === 'process route' || kStr.toLowerCase() === 'process_route'
-            );
-            const prValue = prKey ? (row[prKey] || "") : "";
-            const umPR = document.getElementById('umProcessRoute');
-            const umPRInput = document.getElementById('umProcessRouteInput');
-            if (umPR) umPR.textContent = prValue || "—";
-            if (umPRInput) umPRInput.value = prValue;
-
-            // ─────────────────────────────────────────────────────────────
-            // FIX: Use exact column name matching instead of order-based
-            // champKeys[0]/[1] was unreliable — now we find each by its
-            // neighbouring column context (X→Z for fabric, AA→AC for problem)
-            // ─────────────────────────────────────────────────────────────
-            const colNames = Object.keys(row);
-
-            // Section 1 — Fabric: columns X (fabric problem), Y (fabric action), Z (fabric champion)
-            const fabricProblemKey = colNames.find(kk =>
-                kk.toLowerCase() === 'fabric_problem_definition' ||
-                kk.toLowerCase() === 'fabric problem definition' ||
-                kk.toLowerCase() === 'fabric_problem' ||
-                kk.toLowerCase() === 'fabric problem'
-            );
-            const fabricActionKey = colNames.find(kk =>
-                kk.toLowerCase() === 'action_to_be_taken_for_fabric' ||
-                kk.toLowerCase() === 'action to be taken for fabric' ||
-                kk.toLowerCase() === 'fabric_action' ||
-                kk.toLowerCase() === 'fabric action'
-            );
-            // ✅ FIX: Find fabric champion by looking for 'champion' that appears
-            //    immediately AFTER the fabric action column (col Z position)
-            const fabricChampionKey = colNames.find(kk =>
-                kk.toLowerCase() === 'champion' &&
-                colNames.indexOf(kk) === (fabricActionKey ? colNames.indexOf(fabricActionKey) + 1 : -1)
-            ) || colNames.find(kk => kk.toLowerCase() === 'champion'); // fallback to first champion
-
-            // Section 2 — Problem: columns AA (problem def), AB (problem action), AC (problem champion)
-            const problemDefKey = colNames.find(kk =>
-                kk.toLowerCase() === 'problem_definition' ||
-                kk.toLowerCase() === 'problem definition'
-            );
-            const problemActionKey = colNames.find(kk =>
-                kk.toLowerCase() === 'action_to_be_taken' ||
-                kk.toLowerCase() === 'action to be taken'
-            );
-            // ✅ FIX: Find problem champion by looking for 'champion' that appears
-            //    immediately AFTER the problem action column (col AC position)
-            const problemChampionKey = colNames.find(kk =>
-                kk.toLowerCase() === 'champion' &&
-                colNames.indexOf(kk) === (problemActionKey ? colNames.indexOf(problemActionKey) + 1 : -1)
-            ) || (
-                    // Fallback: find second 'champion' key (different from fabric champion)
-                    colNames.filter(kk => kk.toLowerCase() === 'champion')[1]
+                // ── Detail panel (read-only, reference layout) ──
+                const requestIdRaw =
+                    getColValueRaw(row, ["C_Number", "C Number", "CNumber", "Request_ID", "Request ID"]) || "";
+                const requestId =
+                    requestIdRaw || (feasDisplayId(row) === "-" ? "" : feasDisplayId(row));
+                umSetUploadDetailText("umDetailRequestId", requestId);
+                umSetUploadDetailText("umDetailTitle", titleVal);
+                umSetUploadDetailText(
+                    "umDetailCustomer",
+                    getColValueRaw(row, ["Customer", "customer"]) || row[k["customer"]] || ""
                 );
+                const custDept = feasDisplayCustomerDept(row);
+                umSetUploadDetailText("umDetailCustDept", custDept === "-" ? "" : custDept);
+                umSetUploadDetailText("umDetailTklSeason", feasDisplayTklSeason(row));
+                const mainFab = feasDisplayMainFabric(row);
+                umSetUploadDetailText("umDetailMainFabric", mainFab === "-" ? "" : mainFab);
+                const fabHdr = feasDisplayFabricHeader(row);
+                umSetUploadDetailText("umDetailFabricHeader", fabHdr === "-" ? "" : fabHdr);
 
-            console.log('Section 1 keys:', { fabricProblemKey, fabricActionKey, fabricChampionKey });
-            console.log('Section 2 keys:', { problemDefKey, problemActionKey, problemChampionKey });
+                const plNameKey = Object.keys(row).find(kk =>
+                    kk.toLowerCase() === "pl_name" ||
+                    kk.toLowerCase() === "pl name" ||
+                    kk.toLowerCase() === "plname"
+                );
+                umSetUploadDetailText(
+                    "umDetailPlName",
+                    (plNameKey ? row[plNameKey] : null) ||
+                    getColValueRaw(row, ["PL_Name", "PL Name", "PLName"]) ||
+                    row[k["pl name"]] ||
+                    row[k["pl_name"]] ||
+                    ""
+                );
+                umSetUploadDetailText("umDetailStatus", row.Status || row["Status"] || "");
+                umSetUploadDetailText("umDetailCreated", feasDisplayCreatedForDetail(row));
+                umSetUploadDetailText("umDetailCreatedBy", feasDisplayCreatedByForDetail(row));
 
-            const fpVals = String(row[fabricProblemKey] || "").split('\n').filter(Boolean);
-            const faVals = String(row[fabricActionKey] || "").split('\n').filter(Boolean);
-            const fcVals = String(row[fabricChampionKey] || "").split('\n').filter(Boolean);
+                const folderPathKey = Object.keys(row).find(
+                    kStr => kStr.toLowerCase().includes("folder path") || kStr.toLowerCase() === "folder_path"
+                );
+                umSetUploadFolderPathFromRow(row, folderPathKey);
 
-            const pdVals = String(row[problemDefKey] || "").split('\n').filter(Boolean);
-            const paVals = String(row[problemActionKey] || "").split('\n').filter(Boolean);
-            const pcVals = String(row[problemChampionKey] || "").split('\n').filter(Boolean);
+                // ── Process Route ──
+                const prKey = Object.keys(row).find(kStr =>
+                    kStr.toLowerCase() === 'process route' || kStr.toLowerCase() === 'process_route'
+                );
+                const prValue = prKey ? (row[prKey] || "") : "";
+                const umPR = document.getElementById('umProcessRoute');
+                const umPRInput = document.getElementById('umProcessRouteInput');
+                if (umPR) umPR.textContent = prValue || "—";
+                if (umPRInput) umPRInput.value = prValue;
 
-            const fpCount = Math.max(1, fpVals.length, faVals.length, fcVals.length);
-            const pdCount = Math.max(1, pdVals.length, paVals.length, pcVals.length);
+                // ─────────────────────────────────────────────────────────────
+                // FIX: Use exact column name matching instead of order-based
+                // champKeys[0]/[1] was unreliable — now we find each by its
+                // neighbouring column context (X→Z for fabric, AA→AC for problem)
+                // ─────────────────────────────────────────────────────────────
+                const colNames = Object.keys(row);
 
-            const fContainer = document.getElementById('umContentFabric');
-            if (fContainer) {
-                fContainer.innerHTML = '';
-                for (let i = 0; i < fpCount; i++) {
-                    fContainer.appendChild(createSection1Row(fpVals[i] || "", faVals[i] || "", fcVals[i] || ""));
+                // Section 1 — Fabric: columns X (fabric problem), Y (fabric action), Z (fabric champion)
+                const fabricProblemKey = colNames.find(kk =>
+                    kk.toLowerCase() === 'fabric_problem_definition' ||
+                    kk.toLowerCase() === 'fabric problem definition' ||
+                    kk.toLowerCase() === 'fabric_problem' ||
+                    kk.toLowerCase() === 'fabric problem'
+                );
+                const fabricActionKey = colNames.find(kk =>
+                    kk.toLowerCase() === 'action_to_be_taken_for_fabric' ||
+                    kk.toLowerCase() === 'action to be taken for fabric' ||
+                    kk.toLowerCase() === 'fabric_action' ||
+                    kk.toLowerCase() === 'fabric action'
+                );
+                // ✅ FIX: Find fabric champion by looking for 'champion' that appears
+                //    immediately AFTER the fabric action column (col Z position)
+                const fabricChampionKey = colNames.find(kk =>
+                    kk.toLowerCase() === 'champion' &&
+                    colNames.indexOf(kk) === (fabricActionKey ? colNames.indexOf(fabricActionKey) + 1 : -1)
+                ) || colNames.find(kk => kk.toLowerCase() === 'champion'); // fallback to first champion
+
+                // Section 2 — Problem: columns AA (problem def), AB (problem action), AC (problem champion)
+                const problemDefKey = colNames.find(kk =>
+                    kk.toLowerCase() === 'problem_definition' ||
+                    kk.toLowerCase() === 'problem definition'
+                );
+                const problemActionKey = colNames.find(kk =>
+                    kk.toLowerCase() === 'action_to_be_taken' ||
+                    kk.toLowerCase() === 'action to be taken'
+                );
+                // ✅ FIX: Find problem champion by looking for 'champion' that appears
+                //    immediately AFTER the problem action column (col AC position)
+                const problemChampionKey = colNames.find(kk =>
+                    kk.toLowerCase() === 'champion' &&
+                    colNames.indexOf(kk) === (problemActionKey ? colNames.indexOf(problemActionKey) + 1 : -1)
+                ) || (
+                        // Fallback: find second 'champion' key (different from fabric champion)
+                        colNames.filter(kk => kk.toLowerCase() === 'champion')[1]
+                    );
+
+                console.log('Section 1 keys:', { fabricProblemKey, fabricActionKey, fabricChampionKey });
+                console.log('Section 2 keys:', { problemDefKey, problemActionKey, problemChampionKey });
+
+                const fpVals = String(row[fabricProblemKey] || "").split('\n').filter(Boolean);
+                const faVals = String(row[fabricActionKey] || "").split('\n').filter(Boolean);
+                const fcVals = String(row[fabricChampionKey] || "").split('\n').filter(Boolean);
+
+                const pdVals = String(row[problemDefKey] || "").split('\n').filter(Boolean);
+                const paVals = String(row[problemActionKey] || "").split('\n').filter(Boolean);
+                const pcVals = String(row[problemChampionKey] || "").split('\n').filter(Boolean);
+
+                const fpCount = Math.max(1, fpVals.length, faVals.length, fcVals.length);
+                const pdCount = Math.max(1, pdVals.length, paVals.length, pcVals.length);
+
+                const fContainer = document.getElementById('umContentFabric');
+                if (fContainer) {
+                    fContainer.innerHTML = '';
+                    for (let i = 0; i < fpCount; i++) {
+                        fContainer.appendChild(createSection1Row(fpVals[i] || "", faVals[i] || "", fcVals[i] || ""));
+                    }
                 }
-            }
 
-            const pContainer = document.getElementById('umContentProblem');
-            if (pContainer) {
-                pContainer.innerHTML = '';
-                for (let i = 0; i < pdCount; i++) {
-                    pContainer.appendChild(createSection2Row(pdVals[i] || "", paVals[i] || "", pcVals[i] || ""));
+                const pContainer = document.getElementById('umContentProblem');
+                if (pContainer) {
+                    pContainer.innerHTML = '';
+                    for (let i = 0; i < pdCount; i++) {
+                        pContainer.appendChild(createSection2Row(pdVals[i] || "", paVals[i] || "", pcVals[i] || ""));
+                    }
                 }
-            }
 
-            // Show the modal
-            const modalOverlay = document.getElementById('uploadModalOverlay');
-            const modal = document.getElementById('uploadModal');
-            if (modalOverlay) modalOverlay.classList.add('open');
-            if (modal) modal.classList.add('open');
+                // Show the modal
+                const modalOverlay = document.getElementById('uploadModalOverlay');
+                const modal = document.getElementById('uploadModal');
+                if (modalOverlay) modalOverlay.classList.add('open');
+                if (modal) modal.classList.add('open');
 
             } catch (err) {
                 console.error("[ERROR] openUploadModal failed:", err);
@@ -6111,7 +6880,7 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
 
             uploadedImages = [];
             updateImageButtonLabel();
-            
+
             // NOTE: We don't necessarily reset currentUploadRow here 
             // because clear is often used while the modal is STILL OPEN.
             console.log("[DEBUG] Upload form fields cleared.");
@@ -6397,7 +7166,7 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
             const colNames = Object.keys(currentUploadRow);
             const statusKey = colNames.find(k => k.toLowerCase() === "status") || null;
             const prevStatus = statusKey ? currentUploadRow[statusKey] : currentUploadRow.Status;
-            const targetStatus = "Complete";
+            const targetStatus = "Awaiting Approval";
             if (statusKey) currentUploadRow[statusKey] = targetStatus;
             else currentUploadRow.Status = targetStatus;
             umSetUploadDetailText("umDetailStatus", targetStatus);
@@ -6446,7 +7215,7 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
                     showToast("⚠️ " + msg, "error");
                     return;
                 }
-                
+
                 // ✅ UPDATE LOCAL STATE for immediate quota sync
                 const todayStr = todayKey();
                 const compDateKey = Object.keys(currentUploadRow).find(k => {
@@ -6454,7 +7223,7 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
                     return kl === 'feasibility completion date' || kl === 'feasibility_completion_date' || kl === 'feas comp date';
                 }) || "Feasibility_Completion_Date";
                 currentUploadRow[compDateKey] = todayStr;
-                
+
                 // Refresh local Quota UI
                 quotaUsed = countTodayUploads();
                 updateQuotaUI();
@@ -6474,25 +7243,48 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
                 }
 
                 if (uploadedImages.length > 0) {
-                    btn.textContent = "Uploading image…";
-                    const img = uploadedImages[0];
+                    btn.textContent = "Uploading images…";
+                    let uploadedUrls = [];
+                    let imgIndex = 0;
 
-                    uploadImageToServer(
-                        img.base64, img.mimeType, img.name, sheetRow,
-                        (uploadResult) => {
-                            console.log('Image upload result:', uploadResult);
-                            setTimeout(() => {
-                                btn.textContent = "Generating PDF…";
-                                requestTemplatePDF(sheetRow, btn, originalBtnText, currentUploadRow, mainFabricVal, fabricHeaderVal, prValue, pdfWindow);
-                            }, 500);
-                        },
-                        (uploadErr) => {
-                            console.warn('Image upload error (continuing with PDF):', uploadErr);
-                            showToast('⚠️ Image upload may have failed — PDF will be generated without embedded image.', 'error');
+                    const uploadNext = () => {
+                        if (imgIndex < uploadedImages.length) {
+                            const img = uploadedImages[imgIndex];
+                            img.status = 'uploading';
+                            renderImagePreviews();
+
+                            btn.textContent = `Uploading image ${imgIndex + 1}/${uploadedImages.length}…`;
+                            uploadImageToServer(img.base64, img.mimeType, img.name, sheetRow, (res) => {
+                                if (res && res.imageUrl) {
+                                    uploadedUrls.push(res.imageUrl);
+                                    img.status = 'success';
+                                } else {
+                                    img.status = 'error';
+                                }
+                                renderImagePreviews();
+                                imgIndex++;
+                                uploadNext();
+                            }, (err) => {
+                                console.warn("Image upload error, skipping:", err);
+                                img.status = 'error';
+                                renderImagePreviews();
+                                showToast(`❌ Failed to upload ${img.name}`, "error");
+                                imgIndex++;
+                                uploadNext();
+                            });
+                        } else {
+                            // All images done
+                            const allUrls = uploadedUrls.join(",");
+                            // Sync again with the full list of images if possible, or just proceed to PDF
+                            // requestTemplatePDF will use rowData which we should update
+                            const imgColKey = Object.keys(currentUploadRow).find(k => k.toLowerCase() === 'image link' || k.toLowerCase() === 'image_link') || "Image link";
+                            currentUploadRow[imgColKey] = allUrls;
+
                             btn.textContent = "Generating PDF…";
                             requestTemplatePDF(sheetRow, btn, originalBtnText, currentUploadRow, mainFabricVal, fabricHeaderVal, prValue, pdfWindow);
                         }
-                    );
+                    };
+                    uploadNext();
                 } else {
                     btn.textContent = "Generating PDF…";
                     requestTemplatePDF(sheetRow, btn, originalBtnText, currentUploadRow, mainFabricVal, fabricHeaderVal, prValue, pdfWindow);
@@ -6574,7 +7366,7 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
             }
 
             const url = APPS_SCRIPT_URL + "?" + params.toString();
-            const timeoutMs = 30000;
+            const timeoutMs = 90000; // Increased to 90s for multi-page image processing
             const timeoutId = setTimeout(() => {
                 if (finished) return;
                 finish();
@@ -6596,7 +7388,7 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
 
                     // Get Folder Path from rowData or response if available
                     const folderPath = (rowData && (rowData["Folder Path"] || rowData["folder_path"] || rowData["Folder_Path"]))
-                                     || (response && response.sharePointPath);
+                        || (response && response.sharePointPath);
                     const hasValidFolder = folderPath && folderPath.toString().startsWith("http");
 
                     if (response.downloadUrl) {
@@ -6609,7 +7401,7 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
                         document.body.appendChild(a);
                         a.click();
                         document.body.removeChild(a);
-                        
+
                         // Redirect preview window to Folder Path, or fallback to PDF
                         if (hasValidFolder) {
                             redirectToUrl(folderPath, false);
@@ -6629,13 +7421,13 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
                     }
 
                     btn.textContent = "Saved!";
-                    
+
                     // ✅ IMMEDIATE SYNC: Update the local row's completion date if not already set
                     // so countTodayUploads() sees it even before the re-fetch
                     if (rowData) {
                         const today = todayKey();
                         rowData["Feasibility_Completion_Date"] = today;
-                        rowData["Status"] = "Complete";
+                        rowData["Status"] = "Awaiting Approval";
                     }
 
                     // ── Update quota values ──
@@ -6660,9 +7452,9 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
                         const fn = response.fileName || "feasibility.pdf";
                         const remaining = Math.max(0, DAILY_QUOTA_LIMIT - countTodayUploads());
                         if (response.downloadUrl) {
-                            showToast(`✅ Sheet updated · PDF "${fn}" téléchargé · Quota: ${countTodayUploads()}/${DAILY_QUOTA_LIMIT} (${remaining} restant${remaining !== 1 ? 's' : ''})`, "success");
+                            showToast(`✅ Status changed to Awaiting Approval · PDF "${fn}" downloaded · Quota: ${countTodayUploads()}/${DAILY_QUOTA_LIMIT}`, "success");
                         } else {
-                            showToast(`✅ Sheet updated · PDF "${fn}" dans Drive · Quota: ${countTodayUploads()}/${DAILY_QUOTA_LIMIT} (${remaining} restant${remaining !== 1 ? 's' : ''})`, "success");
+                            showToast(`✅ Status changed to Awaiting Approval · PDF "${fn}" saved to Drive · Quota: ${countTodayUploads()}/${DAILY_QUOTA_LIMIT}`, "success");
                         }
                     }, 600);
 
@@ -6675,22 +7467,289 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
                 }
             };
 
-            const script = document.createElement("script");
-            script.id = callbackName;
-            script.src = url;
-            script.onerror = function () {
-                clearTimeout(timeoutId);
-                if (finished) return;
-                finish();
-                if (pdfWindow && !pdfWindow.closed) pdfWindow.close();
-                btn.textContent = originalBtnText;
-                btn.disabled = false;
-                console.error("❌ JSONP failed. Diagnostics URL:", url.replace('callback=' + callbackName, 'callback=test'));
-                window.open(url.replace('callback=' + callbackName, 'callback=test'), '_blank');
-                showToast("⚠️ PDF failed — a new tab opened showing the Apps Script error.", "error");
-            };
             document.head.appendChild(script);
         }
+
+        // ─────────────────────────────────────────
+        // NEW: APPROVAL WORKFLOW LOGIC
+        // ─────────────────────────────────────────
+        const stakeholders = [
+            "Fariad", "Kevin", "Poinen",
+            "Jean Michel/Nazeem", "Reena",
+            "Asharf.M", "Kirpal", "Seeburn"
+        ];
+
+        let signatureContext = null;
+        let isDrawing = false;
+
+        /** Modal Interaction Logic (Integrated with Stakeholder Roles) */
+        function openApprovalDetailsModal(row, rowIdx) {
+            currentUploadRowIndex = rowIdx;
+            currentUploadRow = row;
+
+            document.getElementById("adDetailRequestId").textContent = feasDisplayId(row);
+            document.getElementById("adDetailTitle").textContent = row['Title'] || row['title'] || "-";
+            document.getElementById("adDetailCustomer").textContent = feasDisplayCustomer(row);
+            document.getElementById("adDetailMainFabric").textContent = feasDisplayMainFabric(row);
+            document.getElementById("adDetailStatus").textContent = row['Status'] || "-";
+
+            const grid = document.getElementById("adStakeholderGrid");
+            grid.innerHTML = "";
+
+            let approvedCount = 0;
+            STAKEHOLDER_NAMES.forEach(name => {
+                const item = document.createElement("div");
+                item.className = "stakeholder-item";
+
+                // Read specific person's status
+                const status = String(row[name + " Status"] || "").trim().toLowerCase();
+                const isApproved = status === "approved";
+                if (isApproved) approvedCount++;
+
+                const signatureUrl = row[name + " Signature"] || "";
+                const remarks = row[name + " Remarks"] || "";
+
+                let badgeHtml = `<span class="stakeholder-badge ${isApproved ? 'badge-approved' : 'badge-not-approved'}">
+                                    ${isApproved ? 'Approved' : 'Not Approved'}
+                                 </span>`;
+
+                // If approved, add a view icon for signature/remarks
+                let viewIconHtml = "";
+                if (isApproved && (signatureUrl || remarks)) {
+                    viewIconHtml = `
+                        <button class="view-approval-btn" onclick="event.stopPropagation(); viewStakeholderApproval('${name}', '${signatureUrl}', '${remarks.replace(/'/g, "\\'")}')" title="View Verification">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
+                    `;
+                }
+
+                item.innerHTML = `
+                    <span class="stakeholder-name">${name}</span>
+                    <div class="stakeholder-badge-container">
+                        ${badgeHtml}
+                        ${viewIconHtml}
+                    </div>
+                `;
+                grid.appendChild(item);
+            });
+
+            // Update Progress Bar
+            const progressFill = document.getElementById("adApprovalProgressFill");
+            const countText = document.getElementById("adApprovalCountText");
+            if (progressFill && countText) {
+                const percentage = (approvedCount / STAKEHOLDER_NAMES.length) * 100;
+                progressFill.style.width = percentage + "%";
+                countText.textContent = `${approvedCount}/${STAKEHOLDER_NAMES.length} Approved`;
+                
+                // Optional: change color if all approved
+                if (approvedCount === STAKEHOLDER_NAMES.length) {
+                    progressFill.style.background = "#10b981"; // Green
+                } else {
+                    progressFill.style.background = "linear-gradient(90deg, #2563eb, #3b82f6)"; // Blue
+                }
+            }
+
+            // Role-based button visibility
+            const user = getLoggedInUser();
+            const stakeholderName = STAKEHOLDER_MAP[user.email];
+            const isAdmin = user.email === ADMIN_EMAIL;
+            const approvalBtn = document.getElementById('adApprovalBtn');
+
+
+            // Check if user has already approved their specific slot
+            let alreadyApproved = false;
+            if (stakeholderName && String(row[stakeholderName + " Status"] || "").toLowerCase() === "approved") {
+                alreadyApproved = true;
+            }
+
+            if (approvalBtn) {
+                if (isAdmin || (stakeholderName && !alreadyApproved)) {
+                    approvalBtn.disabled = false;
+                    approvalBtn.style.opacity = "1";
+                    approvalBtn.title = isAdmin ? "Admin Override" : `Approve as ${stakeholderName}`;
+                } else {
+                    approvalBtn.disabled = true;
+                    approvalBtn.style.opacity = "0.5";
+                    approvalBtn.title = alreadyApproved ? "You have already approved" : "Viewing access only";
+                }
+            }
+
+            document.getElementById("approvalDetailsModalOverlay").classList.add("open");
+            document.getElementById("approvalDetailsModal").classList.add("open");
+        }
+
+        /** Viewing an existing approval */
+        function viewStakeholderApproval(name, sigUrl, remark) {
+            document.getElementById("viewStakeholderName").textContent = name + " Approval";
+            document.getElementById("viewSignImg").src = sigUrl || "";
+            document.getElementById("viewRemarkText").textContent = remark || "No remarks provided.";
+            document.getElementById("approvalViewOverlay").style.display = "flex";
+        }
+
+        function closeApprovalView() {
+            document.getElementById("approvalViewOverlay").style.display = "none";
+        }
+
+        function closeApprovalDetailsModal() {
+            document.getElementById("approvalDetailsModalOverlay").classList.remove("open");
+            document.getElementById("approvalDetailsModal").classList.remove("open");
+        }
+
+        function openApprovalActionModal() {
+            const user = getLoggedInUser();
+            const stakeholderName = STAKEHOLDER_MAP[user.email];
+            const isAdmin = user.email === ADMIN_EMAIL;
+
+            if (!isAdmin && !stakeholderName) {
+                showToast("You do not have permission to approve.", "error");
+                return;
+            }
+
+            // Determine which slot is being approved
+            // If Admin, they approve the slot they were looking at or clicking on.
+            // For now, if Admin, we assume they can click an 'Approve for [Name]' button.
+            // But to keep it simple with existing UI, we'll use the mapped role.
+            currentStakeholderSlot = stakeholderName || "Fariad";
+
+            closeApprovalDetailsModal();
+            document.getElementById("approvalRemarks").value = "";
+            clearSignaturePad();
+
+            document.getElementById("approvalActionModalOverlay").classList.add("open");
+            document.getElementById("approvalActionModal").classList.add("open");
+            setTimeout(initSignaturePad, 100);
+        }
+
+
+        function closeApprovalActionModal() {
+            document.getElementById("approvalActionModalOverlay").classList.remove("open");
+            document.getElementById("approvalActionModal").classList.remove("open");
+        }
+
+
+        function initSignaturePad() {
+            const canvas = document.getElementById("signaturePad");
+            if (!canvas) return;
+
+            // Adjust canvas resolution for high DPI displays
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+
+            signatureContext = canvas.getContext("2d");
+            signatureContext.strokeStyle = "#0f172a";
+            signatureContext.lineWidth = 2;
+            signatureContext.lineCap = "round";
+
+            canvas.addEventListener("mousedown", startDrawing);
+            canvas.addEventListener("mousemove", draw);
+            canvas.addEventListener("mouseup", stopDrawing);
+            canvas.addEventListener("mouseleave", stopDrawing);
+
+            // Touch support
+            canvas.addEventListener("touchstart", (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                startDrawing({ offsetX: touch.clientX - rect.left, offsetY: touch.clientY - rect.top });
+            }, { passive: false });
+
+            canvas.addEventListener("touchmove", (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                draw({ offsetX: touch.clientX - rect.left, offsetY: touch.clientY - rect.top });
+            }, { passive: false });
+
+            canvas.addEventListener("touchend", stopDrawing);
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            signatureContext.beginPath();
+            signatureContext.moveTo(e.offsetX, e.offsetY);
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            signatureContext.lineTo(e.offsetX, e.offsetY);
+            signatureContext.stroke();
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function clearSignaturePad() {
+            const canvas = document.getElementById("signaturePad");
+            if (canvas && signatureContext) {
+                signatureContext.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        async function submitFinalApproval() {
+            if (!currentUploadRow) return;
+
+            const remarks = document.getElementById("approvalRemarks").value;
+            const canvas = document.getElementById("signaturePad");
+            const signatureData = canvas.toDataURL("image/png");
+
+            const submitBtn = document.querySelector("#approvalActionModal .um-save-btn");
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = "Submitting...";
+            }
+
+            showToast("⌛ Submitting approval. This may take a few seconds...", "info");
+
+            try {
+                // We use fetch with POST to send the Base64 image data
+                // Note: This requires the Apps Script to handle POST and CORS
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: "POST",
+                    mode: "no-cors", // Use no-cors as a last resort if standard CORS fails for local files
+                    body: JSON.stringify({
+                        action: "saveFeasibilitySignature",
+                        signature: signatureData,
+                        id: feasDisplayId(currentUploadRow),
+                        stakeholder: currentStakeholderSlot,
+                        row: currentUploadRow._sheetRow,
+                        remarks: remarks
+                    })
+                });
+
+                // Since we used no-cors, we can't see the response body, 
+                // but we can assume success if no error was thrown, or wait and refresh.
+                showToast("✅ Approval request sent! Refreshing data...", "success");
+
+                setTimeout(() => {
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = "Submit Approval";
+                    }
+                    closeApprovalActionModal();
+                    loadFeasibilityFromAppsScript();
+                }, 2000);
+
+            } catch (err) {
+                console.error("Submission error:", err);
+                showToast("❌ Connection error. Please ensure your script is deployed correctly.", "error");
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = "Submit Approval";
+                }
+            }
+        }
+
+
+        // Event Listeners for the new modals
+        document.getElementById("approvalDetailsModalClose").addEventListener("click", closeApprovalDetailsModal);
+        document.getElementById("adCloseBtn").addEventListener("click", closeApprovalDetailsModal);
+        document.getElementById("adApprovalBtn").addEventListener("click", openApprovalActionModal);
+
+        document.getElementById("approvalActionModalClose").addEventListener("click", closeApprovalActionModal);
+        document.getElementById("approvalActionCancelBtn").addEventListener("click", closeApprovalActionModal);
+        document.getElementById("clearSignature").addEventListener("click", clearSignaturePad);
+        document.getElementById("approvalActionSubmitBtn").addEventListener("click", submitFinalApproval);
+
     </script>
 
 </body>
