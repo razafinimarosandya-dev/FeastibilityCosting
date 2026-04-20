@@ -4682,7 +4682,7 @@
             return "REPORTER";
         }
 
-        function initUserProfile() {
+
             const user = getLoggedInUser();
             const role = getUserRole(user.email);
 
@@ -5168,7 +5168,7 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
 
 
         document.addEventListener("DOMContentLoaded", () => {
-            initUserProfile();
+
             const options = { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };
 
             reviewDateEl.textContent = currentDate.toLocaleDateString('en-US', options);
