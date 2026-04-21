@@ -3147,107 +3147,6 @@
             object-fit: cover;
         }
 
-        /* Profile Popup Styles (Centered Design) */
-        .profile-popup {
-            position: absolute;
-            top: calc(100% + 15px);
-            right: 0;
-            width: 280px;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(226, 232, 240, 0.9);
-            border-radius: 16px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-            padding: 24px;
-            z-index: 1000;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            animation: slideInDown 0.2s ease-out;
-        }
-
-        @keyframes slideInDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .profile-popup.show {
-            display: flex;
-        }
-
-        .popup-avatar-circle {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #4f46e5, #8b5cf6);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            font-weight: 600;
-            margin-bottom: 16px;
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
-            overflow: hidden;
-        }
-
-        .profile-popup .profile-name {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #1e293b;
-            margin-bottom: 4px;
-        }
-
-        .profile-popup .profile-email {
-            font-size: 0.85rem;
-            color: #64748b;
-            margin-bottom: 16px;
-            word-break: break-all;
-        }
-
-        .profile-popup .profile-badge {
-            background-color: #f0f7ff;
-            color: #3b82f6;
-            font-size: 0.7rem;
-            font-weight: 700;
-            padding: 6px 16px;
-            border-radius: 20px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 24px;
-        }
-
-        .profile-popup .profile-divider {
-            width: 100%;
-            height: 1px;
-            background-color: #f1f5f9;
-            margin-bottom: 20px;
-        }
-
-        .profile-popup .btn-signout {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 12px;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            color: #ef4444;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.2s;
-            cursor: pointer;
-            background: white;
-        }
-
-        .profile-popup .btn-signout:hover {
-            background-color: #fef2f2;
-            border-color: #fecaca;
-            transform: translateY(-1px);
-        }
-
         .profile-name {
             font-size: 16px;
             font-weight: 700;
@@ -3543,33 +3442,27 @@
                     </svg>
                 </button>
                 <div style="position: relative;">
-                    <!-- Top Nav Avatar -->
-                    <div id="userAvatarContainer" style="cursor: pointer;">
-                        <div class="avatar" id="userAvatarDefault">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="12" cy="7" r="4"></circle>
-                            </svg>
+                    <img class="avatar" src="https://i.pravatar.cc/150?u=feasibility_user" alt="User Profile"
+                        id="userAvatar" style="cursor: pointer;" />
+                    <div class="profile-popup" id="profilePopup">
+                        <div class="profile-header">
+                            <img src="https://i.pravatar.cc/150?u=feasibility_user" class="profile-avatar-large"
+                                id="popupAvatar" />
+                            <div class="profile-name" id="popupName">Guest User</div>
+                            <div class="profile-email" id="popupEmail">guest@example.com</div>
+                            <div class="profile-role-badge" id="popupRole">REPORTER</div>
                         </div>
-                        <div class="avatar hidden" id="userAvatarInitials"
-                            style="display: flex; align-items: center; justify-content: center; font-weight: 600; color: #2563eb; background: #eff6ff;">
+                        <div class="profile-footer">
+                            <button class="sign-out-btn" id="signOutBtn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                    <polyline points="16 17 21 12 16 7"></polyline>
+                                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                                </svg>
+                                <span>Sign Out</span>
+                            </button>
                         </div>
-                    </div>
-
-                    <!-- Centered Profile Dropdown -->
-                    <div class="profile-popup" id="userDropdown">
-                        <div class="popup-avatar-circle" id="dropdownAvatar">?</div>
-                        <div class="profile-name" id="dropdownName">Guest User</div>
-                        <div class="profile-email" id="dropdownEmail">guest@example.com</div>
-                        <div class="profile-badge" id="dropdownBadge">VISITOR</div>
-
-                        <div class="profile-divider"></div>
-
-                        <button class="btn-signout" id="signOutBtn">
-                            <i class="fas fa-sign-out-alt"></i>
-                            <span>Sign Out</span>
-                        </button>
                     </div>
                 </div>
             </div>
@@ -4378,8 +4271,11 @@
 
     <!-- Main application logic -->
     <script>
+        // --- State & DOM Elements ---
+        /** Same web app as Techpack / Pattern / Conso / ACC / PRI; GET uses ?sheet=Feasibility */
         const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzSdyx3uNKZPhbhwg_eIc_VmRTvUNF8-Q5z9hunbr7seSuz2nNdO-awDI8qserEQHkr/exec";
         const LOGIN_PAGE_URL = "https://costing-app-beta.vercel.app/";
+        const REMEMBERED_USER_KEY = 'ACC_REMEMBERED_USER';
 
         /**
          * Auth Guard: Redirects to login if no session is found.
@@ -4390,7 +4286,7 @@
             consumeUrlSession();
 
             // 2. Check if we have a user session in localStorage
-            const session = localStorage.getItem('ACC_REMEMBERED_USER');
+            const session = localStorage.getItem(REMEMBERED_USER_KEY);
             
             if (!session) {
                 console.warn('No active session found. Redirecting to login...');
@@ -4420,7 +4316,7 @@
                 try {
                     const decodedData = JSON.parse(decodeURIComponent(escape(atob(encodedData))));
                     if (decodedData && decodedData.loginId) {
-                        localStorage.setItem('ACC_REMEMBERED_USER', JSON.stringify(decodedData));
+                        localStorage.setItem(REMEMBERED_USER_KEY, JSON.stringify(decodedData));
                         // Clean up URL without blocking history
                         window.history.replaceState(null, null, window.location.pathname);
                         return true;
@@ -4432,76 +4328,9 @@
             return false;
         }
 
-        /**
-         * Initializes the user profile dropdown with data from localStorage
-         */
-        function initProfileDropdown() {
-            console.log('Initializing Profile Popup...');
-            const REMEMBERED_USER_KEY = 'ACC_REMEMBERED_USER';
-            const avatarContainer = document.getElementById('userAvatarContainer');
-            const dropdown = document.getElementById('userDropdown');
-            const signOutBtn = document.getElementById('signOutBtn');
-            
-            if (!avatarContainer || !dropdown) return;
+        // EXECUTE AUTH CHECK IMMEDIATELY
+        if (checkAuth()) {
 
-            // Load user data
-            const storedData = localStorage.getItem(REMEMBERED_USER_KEY);
-            const userData = JSON.parse(storedData || 'null');
-            
-            if (userData) {
-                const name = userData.name || userData.username || userData.loginId || 'User';
-                const email = userData.email || userData.loginId || '---';
-                const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
-                
-                // Update Top Nav Avatar
-                const initialsEl = document.getElementById('userAvatarInitials');
-                const defaultIcon = document.getElementById('userAvatarDefault');
-                if (initialsEl && defaultIcon) {
-                    initialsEl.textContent = initials;
-                    initialsEl.classList.remove('hidden');
-                    defaultIcon.classList.add('hidden');
-                }
-                
-                // Update Dropdown Card
-                const dAvatar = document.getElementById('dropdownAvatar');
-                const dName = document.getElementById('dropdownName');
-                const dEmail = document.getElementById('dropdownEmail');
-                const dBadge = document.getElementById('dropdownBadge');
-                
-                if (dAvatar) dAvatar.textContent = initials;
-                if (dName) dName.textContent = name;
-                if (dEmail) dEmail.textContent = email;
-                if (dBadge) dBadge.textContent = (userData.jobTitle || 'MEMBER').toUpperCase();
-            }
-
-            // Toggle Dropdown
-            avatarContainer.addEventListener('click', (e) => {
-                e.stopPropagation();
-                dropdown.classList.toggle('show');
-            });
-
-            // Close on click outside
-            document.addEventListener('click', (e) => {
-                if (!dropdown.contains(e.target) && !avatarContainer.contains(e.target)) {
-                    dropdown.classList.remove('show');
-                }
-            });
-
-            // Sign Out logic
-            if (signOutBtn) {
-                signOutBtn.addEventListener('click', () => {
-                    if (confirm('Are you sure you want to sign out?')) {
-                        localStorage.removeItem(REMEMBERED_USER_KEY);
-                        window.location.href = LOGIN_PAGE_URL;
-                    }
-                });
-            }
-        }
-
-        // EXECUTE SECURITY CHECK
-        if (!checkAuth()) return; // Stop execution if not authenticated
-            // --- State & DOM Elements ---
-            /** Same web app as Techpack / Pattern / Conso / ACC / PRI; GET uses ?sheet=Feasibility */
         // Optional override for a new Feasibility template (Google Drive file ID).
         // Leave empty to use backend default template.
         const FEAS_PDF_TEMPLATE_FILE_ID = "1WjSsOkFBpttKLtspI7g7FH6Wl5ecXewDi4LFCGzqVK0";
@@ -4669,7 +4498,7 @@
 
         function getLoggedInUser() {
             try {
-                const user = JSON.parse(localStorage.getItem('ACC_REMEMBERED_USER') || 'null');
+                const user = JSON.parse(localStorage.getItem(REMEMBERED_USER_KEY) || 'null');
                 return user || { email: "guest@example.com", name: "Guest User" };
             } catch (e) {
                 return { email: "guest@example.com", name: "Guest User" };
@@ -4680,6 +4509,53 @@
             if (email === ADMIN_EMAIL) return "ADMIN";
             if (STAKEHOLDER_MAP[email]) return "STAKEHOLDER";
             return "REPORTER";
+        }
+
+        function initUserProfile() {
+            const user = getLoggedInUser();
+            const role = getUserRole(user.email);
+
+            const nameEl = document.getElementById('popupName');
+            const emailEl = document.getElementById('popupEmail');
+            const roleEl = document.getElementById('popupRole');
+            const avatarImg = document.getElementById('userAvatar');
+            const popupAvatarImg = document.getElementById('popupAvatar');
+
+            if (nameEl) nameEl.textContent = user.name || user.username || user.loginId || "Unknown User";
+            if (emailEl) emailEl.textContent = user.email || user.loginId || "guest@example.com";
+            if (roleEl) roleEl.textContent = role;
+
+            const initials = (user.name || user.username || user.loginId || "G").split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+            const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=6366f1&color=fff&bold=true`;
+            
+            if (avatarImg) avatarImg.src = avatarUrl;
+            if (popupAvatarImg) popupAvatarImg.src = avatarUrl;
+
+            const profileBtn = document.getElementById('userAvatar');
+            const popup = document.getElementById('profilePopup');
+
+            if (profileBtn && popup) {
+                profileBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    popup.classList.toggle('visible');
+                };
+            }
+
+            const signOutBtn = document.getElementById('signOutBtn');
+            if (signOutBtn) {
+                signOutBtn.onclick = () => {
+                    if (confirm('Are you sure you want to sign out?')) {
+                        localStorage.removeItem(REMEMBERED_USER_KEY);
+                        window.location.href = LOGIN_PAGE_URL;
+                    }
+                };
+            }
+
+            document.addEventListener('click', (e) => {
+                if (popup && popup.classList.contains('visible') && !popup.contains(e.target) && e.target !== profileBtn) {
+                    popup.classList.remove('visible');
+                }
+            });
         }
 
         function feasTableStatusClass(status) {
@@ -5138,7 +5014,7 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
 
 
         document.addEventListener("DOMContentLoaded", () => {
-
+            initUserProfile();
             const options = { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };
 
             reviewDateEl.textContent = currentDate.toLocaleDateString('en-US', options);
@@ -7947,9 +7823,7 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
         document.getElementById("approvalActionCancelBtn").addEventListener("click", closeApprovalActionModal);
         document.getElementById("clearSignature").addEventListener("click", clearSignaturePad);
         document.getElementById("approvalActionSubmitBtn").addEventListener("click", submitFinalApproval);
-
-        // UI Initialization
-        initProfileDropdown();
+    }
     </script>
 
 </body>
