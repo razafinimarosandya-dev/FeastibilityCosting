@@ -3397,6 +3397,14 @@
             width: 0%;
             transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        @keyframes pulse-highlight {
+            0% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(1.1); filter: brightness(1.2); color: #f59e0b; }
+            100% { transform: scale(1); filter: brightness(1); }
+        }
+        .pulse-animation {
+            animation: pulse-highlight 0.5s ease-in-out;
+        }
     </style>
 
 </head>
@@ -4342,10 +4350,8 @@
         let currentStakeholderSlot = "";
 
         let currentIndex = 0;
-        const DAILY_QUOTA_LIMIT = 100;
+        const DAILY_QUOTA_LIMIT = 15;
         let quotaUsed = 0;
-        let totalQuota = DAILY_QUOTA_LIMIT; // always 15
-
         let currentDate = new Date();
         let calMonth = currentDate.getMonth();
         let calYear = currentDate.getFullYear();
@@ -5368,7 +5374,12 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
         function updateQuotaUI() {
             const used = quotaUsed;
             const total = DAILY_QUOTA_LIMIT;
-            if (quotaUsedEl) quotaUsedEl.textContent = used;
+            if (quotaUsedEl) {
+                quotaUsedEl.textContent = used;
+                quotaUsedEl.classList.remove('pulse-animation');
+                void quotaUsedEl.offsetWidth; // trigger reflow
+                quotaUsedEl.classList.add('pulse-animation');
+            }
             if (quotaTotalEl) quotaTotalEl.textContent = total;
 
             // ✅ SYNC with Dashboard (on the same PC)
