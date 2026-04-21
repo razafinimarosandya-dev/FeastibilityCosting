@@ -4342,8 +4342,8 @@
         let currentStakeholderSlot = "";
 
         let currentIndex = 0;
-        const DAILY_QUOTA_LIMIT = 15;
-        let quotaUsed = 0;   // uploads done today (from allData + localStorage)
+        const DAILY_QUOTA_LIMIT = 100;
+        let quotaUsed = 0;
         let totalQuota = DAILY_QUOTA_LIMIT; // always 15
 
         let currentDate = new Date();
@@ -4987,6 +4987,7 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
                             renderTableHeaders(headers);
                             renderTablePage();
                             updateHeroBadges(); // Refresh badges after load
+                            updateQuotaUI(); // Refresh quota after load
                             updateFeasClearFiltersButtonVisibility();
                         } else {
                             dataTableBody.innerHTML = "<tr><td colspan='100%'>No data found in Feasibility sheet.</td></tr>";
@@ -5039,6 +5040,17 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
                     }
                 });
             }
+            // ✅ Initial Quota Load from LocalStorage (Instant UI)
+            try {
+                const cached = JSON.parse(localStorage.getItem('garmentcost_daily_quota') || 'null');
+                if (cached && cached.date === todayKey()) {
+                    quotaUsed = cached.used;
+                    updateQuotaUI();
+                }
+            } catch (e) { }
+
+            updateHeroBadges(); // Initial placeholder update
+            updateQuotaUI();
 
             loadFeasibilityFromAppsScript().catch(function (err) {
                 console.error(err);
