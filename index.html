@@ -6395,9 +6395,12 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
             script.onerror = () => {
                 clearTimeout(timeoutId);
                 console.error(`❌ Sheet row ${sheetRow} JSONP request failed`);
+                // ✅ DIAGNOSTIC: Open the URL in a new window if it fails so user can see GAS error
+                const diagUrl = url.replace("callback=" + callbackName, "callback=test");
+                window.open(diagUrl, "_blank");
                 finish({
                     success: false,
-                    error: "Could not reach Apps Script sync endpoint."
+                    error: "Could not reach Apps Script sync endpoint. A new tab has been opened with diagnostics."
                 });
             };
             document.head.appendChild(script);
@@ -7231,7 +7234,7 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
                 AC: pc,
                 "Process Route": prValue
             };
-            if (fieldsJson) extraParams.fieldsJson = fieldsJson;
+            // fieldsJson removed (not used by backend sync and causes URL length issues)
 
             // ── Step 1: Sync form + full detail row to sheet (Apps Script: feasibilitySyncJsonp_) ──
             syncToSheetJSONP(sheetRow, null, targetStatus, extraParams, response => {
