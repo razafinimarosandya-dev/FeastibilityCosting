@@ -5340,8 +5340,13 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
                         kl.includes('completed')
                     ) {
                         const raw = String(row[k] || '').trim();
-                        // Google Sheets dates might come as strings or ISO
-                        if (raw && (raw.startsWith(todayStr) || raw.includes(todayStr))) return true;
+                        // Handle both YYYY-MM-DD and DD/MM/YYYY
+                        if (raw) {
+                            if (raw.includes(todayStr)) return true;
+                            const segments = todayStr.split('-'); // [YYYY, MM, DD]
+                            const reverseDate = `${segments[2]}/${segments[1]}/${segments[0]}`;
+                            if (raw.includes(reverseDate)) return true;
+                        }
                     }
                 }
                 return false;
@@ -7253,15 +7258,18 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
                 }
 
                 // ✅ UPDATE LOCAL STATE for immediate quota sync
-                const todayStr = todayKey();
-                const compDateKey = Object.keys(currentUploadRow).find(k => {
-                    const kl = k.toLowerCase().replace(/_/g, ' ');
-                    return kl === 'feasibility completion date' || kl === 'feasibility_completion_date' || kl === 'feas comp date';
-                }) || "Feasibility_Completion_Date";
-                currentUploadRow[compDateKey] = todayStr;
+                if (response && response.newQuotaCount !== undefined) {
+                    quotaUsed = response.newQuotaCount;
+                } else {
+                    const todayStr = todayKey();
+                    const compDateKey = Object.keys(currentUploadRow).find(k => {
+                        const kl = k.toLowerCase().replace(/_/g, ' ');
+                        return kl === 'feasibility completion date' || kl === 'feasibility_completion_date' || kl === 'feas comp date';
+                    }) || "Feasibility_Completion_Date";
+                    currentUploadRow[compDateKey] = todayStr;
+                    quotaUsed = countTodayUploads();
+                }
 
-                // Refresh local Quota UI
-                quotaUsed = countTodayUploads();
                 updateQuotaUI();
                 let pdfWindow = null;
                 try {
