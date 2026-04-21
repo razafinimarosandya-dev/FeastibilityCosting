@@ -4499,7 +4499,7 @@
         }
 
         // EXECUTE SECURITY CHECK
-        if (checkAuth()) {
+        if (!checkAuth()) return; // Stop execution if not authenticated
             // --- State & DOM Elements ---
             /** Same web app as Techpack / Pattern / Conso / ACC / PRI; GET uses ?sheet=Feasibility */
         // Optional override for a new Feasibility template (Google Drive file ID).
@@ -4680,36 +4680,6 @@
             if (email === ADMIN_EMAIL) return "ADMIN";
             if (STAKEHOLDER_MAP[email]) return "STAKEHOLDER";
             return "REPORTER";
-        }
-
-
-            const user = getLoggedInUser();
-            const role = getUserRole(user.email);
-
-            document.getElementById('popupName').textContent = user.name || "Unknown User";
-            document.getElementById('popupEmail').textContent = user.email;
-            document.getElementById('popupRole').textContent = role;
-
-            const avatarUrl = `https://i.pravatar.cc/150?u=${user.email}`;
-            document.getElementById('userAvatar').src = avatarUrl;
-            document.getElementById('popupAvatar').src = avatarUrl;
-
-            document.getElementById('userAvatar').addEventListener('click', (e) => {
-                e.stopPropagation();
-                document.getElementById('profilePopup').classList.toggle('visible');
-            });
-
-            document.getElementById('signOutBtn').addEventListener('click', () => {
-                localStorage.removeItem('REMEMBERED_USER_KEY');
-                window.location.href = "index_18_fixed.html";
-            });
-
-            document.addEventListener('click', (e) => {
-                const popup = document.getElementById('profilePopup');
-                if (popup && popup.classList.contains('visible') && !popup.contains(e.target) && e.target.id !== 'userAvatar') {
-                    popup.classList.remove('visible');
-                }
-            });
         }
 
         function feasTableStatusClass(status) {
@@ -7980,7 +7950,6 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
 
         // UI Initialization
         initProfileDropdown();
-    } // End of Auth Guard block
     </script>
 
 </body>
