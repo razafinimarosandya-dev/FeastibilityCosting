@@ -7105,51 +7105,7 @@ h2{color:#2563eb;font-size:22px;margin-bottom:12px;}p{color:#64748b;font-size:15
             return encodeURIComponent(JSON.stringify(out));
         }
 
-        // ─────────────────────────────────────────
-        // Google Sheets Sync via JSONP
-        // ─────────────────────────────────────────
-        function syncToSheetJSONP(sheetRow, date, status, extraParams, onComplete) {
-            const callbackName = "syncCallback_" + sheetRow + "_" + Date.now();
-
-            const params = new URLSearchParams({
-                callback: callbackName,
-                action: "sync",
-                row: sheetRow
-            });
-
-            if (date !== null && date !== undefined) params.set("date", date);
-            if (status !== null && status !== undefined) params.set("status", status);
-
-            if (extraParams) {
-                Object.entries(extraParams).forEach(([k, v]) => {
-                    params.set(k, String(v));
-                });
-            }
-
-            const url = APPS_SCRIPT_URL + "?" + params.toString();
-
-            window[callbackName] = function (response) {
-                if (response && response.success) {
-                    console.log(`✅ Sheet row ${sheetRow} synced`);
-                } else {
-                    console.warn(`⚠️ Sheet row ${sheetRow} sync issue:`, response);
-                }
-                const el = document.getElementById(callbackName);
-                if (el) el.remove();
-                delete window[callbackName];
-                if (onComplete) onComplete(response);
-            };
-
-            const script = document.createElement("script");
-            script.id = callbackName;
-            script.src = url;
-            script.onerror = () => {
-                console.error(`❌ Sheet row ${sheetRow} JSONP request failed`);
-                delete window[callbackName];
-                if (onComplete) onComplete({ success: false });
-            };
-            document.head.appendChild(script);
-        }
+        // syncToSheetJSONP duplicate removed. Using version at line 6339.
 
         // ─────────────────────────────────────────
         // SAVE BUTTON — handleSaveAndGeneratePDF
